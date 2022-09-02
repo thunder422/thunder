@@ -37,28 +37,9 @@ endif()
 
 message(STATUS "Generating Coverage Data")
 execute_process(
-  COMMAND ${LCOV_PROGRAM} -q -c -d . -o all.cov
+  COMMAND ${LCOV_PROGRAM} -q -c -d . --include ${TEST_SOURCE_DIR}/* -o final.cov
   WORKING_DIRECTORY ${REAL_BINARY_DIR}
 )
-
-message(STATUS "Filtering coverage for: ${TEST_SOURCE_DIR}/*")
-execute_process(
-  COMMAND ${LCOV_PROGRAM} -q -e all.cov ${TEST_SOURCE_DIR}/* -o filtered.cov
-  WORKING_DIRECTORY ${REAL_BINARY_DIR}
-)
-file(REMOVE ${REAL_BINARY_DIR}/all.cov)
-
-file(REMOVE ${REAL_BINARY_DIR}/final.cov)
-foreach(file IN LISTS TEST_FILES)
-  message(STATUS "-- Extracting coverage for: ${TEST_SOURCE_DIR}/${file}")
-  execute_process(
-    COMMAND ${LCOV_PROGRAM} -q -e filtered.cov ${TEST_SOURCE_DIR}/${file} -o single.cov
-    WORKING_DIRECTORY ${REAL_BINARY_DIR}
-  )
-  file(READ ${REAL_BINARY_DIR}/single.cov COV_CONTENTS)
-  file(APPEND ${REAL_BINARY_DIR}/final.cov ${COV_CONTENTS})
-endforeach()
-file(REMOVE ${REAL_BINARY_DIR}/filtered.cov ${REAL_BINARY_DIR}/single.cov)
 
 message(STATUS "Generating coverage HTML")
 set(COV_DIR ${CMAKE_CURRENT_BINARY_DIR}/coverage_${TEST_PROGRAM}.html)
