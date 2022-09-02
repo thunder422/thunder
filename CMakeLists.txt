@@ -51,3 +51,4 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 add_subdirectory(Catch)
 
 add_subdirectory(Parser)
+add_subdirectory(Program)
