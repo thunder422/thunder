@@ -36,20 +36,22 @@ if(TEST_PROGRAM_RESULT)
 endif()
 
 message(STATUS "Generating Coverage Data")
-execute_process(
-  COMMAND ${LCOV_PROGRAM} -q -c -d . --include ${TEST_SOURCE_DIR}/* -o final.cov
-  WORKING_DIRECTORY ${REAL_BINARY_DIR}
-)
+set(test_name "${TEST_PROGRAM}-Coverage")
+set(lcov_args "-q;-c;-d;.;-o;${test_name}")
+foreach(file IN LISTS TEST_FILES)
+  list(APPEND lcov_args --include ${TEST_SOURCE_DIR}/${file})
+endforeach()
+execute_process(COMMAND ${LCOV_PROGRAM} ${lcov_args} WORKING_DIRECTORY ${REAL_BINARY_DIR})
 
 message(STATUS "Generating coverage HTML")
 set(COV_DIR ${CMAKE_CURRENT_BINARY_DIR}/coverage_${TEST_PROGRAM}.html)
 file(REMOVE ${COV_DIR})
 execute_process(
-  COMMAND ${GENHTML_PROGRAM} --precision=3 --demangle-cpp -o ${COV_DIR} final.cov
+  COMMAND ${GENHTML_PROGRAM} --precision=3 --demangle-cpp -o ${COV_DIR} ${test_name}
   OUTPUT_VARIABLE COV_OUTPUT
   WORKING_DIRECTORY ${REAL_BINARY_DIR}
 )
-file(REMOVE ${REAL_BINARY_DIR}/final.cov)
+file(REMOVE ${REAL_BINARY_DIR}/${test_name})
 
 string(REGEX MATCH "lines[.]+: ([^%]+)% \\([0-9]+ of ([0-9]+) lines\\)" COV_LINES ${COV_OUTPUT})
 if(NOT CMAKE_MATCH_1 STREQUAL "100.000")
