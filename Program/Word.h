@@ -14,7 +14,7 @@
 
 class ProgramWord {
 public:
-    explicit ProgramWord(OpCode opcode);
+    explicit ProgramWord(const OpCode &opcode);
     explicit ProgramWord(WordType operand);
 
     operator WordType() const;
@@ -24,7 +24,7 @@ private:
 };
 
 
-inline ProgramWord::ProgramWord(OpCode opcode) :
+inline ProgramWord::ProgramWord(const OpCode &opcode) :
     word {opcode.getValue()}
 {
 }

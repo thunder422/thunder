@@ -22,6 +22,7 @@ add_executable(ProgramCommandOpCode_UnitTests
 add_covered_test(ProgramCommandOpCode_UnitTests CommandOpCode*)
 
 add_executable(ProgramWord_UnitTests
+  CommandOpCode.cpp
   OpCode.cpp
   Word.h
   Word_UnitTests.cpp
