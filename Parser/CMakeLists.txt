@@ -5,17 +5,17 @@
 # (See accompanying file LICENSE or <http://www.gnu.org/licenses/>)
 
 add_executable(ParseIdentifier_UnitTests
-  Identifier.h
   Identifier.cpp
   Identifier_UnitTests.cpp
+  Parser.h
   ${CATCH_SOURCES}
 )
 add_covered_test(ParseIdentifier_UnitTests Identifier*)
 
 add_executable(ParseNumber_UnitTests
-  Number.h
   Number.cpp
   Number_UnitTests.cpp
+  Parser.h
   ${CATCH_SOURCES}
 )
 add_covered_test(ParseNumber_UnitTests Number*)

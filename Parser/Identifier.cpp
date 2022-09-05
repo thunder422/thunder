@@ -8,37 +8,39 @@
 #include <cctype>
 #include <iostream>
 
-#include "Identifier.h"
+#include "Parser.h"
+
 
 class IdentifierParser {
 public:
-    IdentifierParser(std::istream &is);
+    IdentifierParser(Parser &parser);
 
     std::string operator()();
 
 private:
-    std::istream &is;
+    Parser &parser;
     std::string identifier;
 };
 
-IdentifierParser::IdentifierParser(std::istream &is) :
-    is {is}
+IdentifierParser::IdentifierParser(Parser &parser) :
+    parser {parser}
 {
 }
 
 std::string IdentifierParser::operator()()
 {
     for (;;) {
-        auto next_char = is.peek();
+        auto next_char = parser.peekNextChar();
         if (std::isalpha(next_char)) {
-            identifier += is.get();
+            identifier += parser.getNextChar();
         } else {
             return std::move(identifier);
         }
     }
 }
 
-std::string parseIdentifier(std::istream &is)
+
+std::string Parser::parseIdentifier()
 {
-    return IdentifierParser{is}();
+    return IdentifierParser{*this}();
 }

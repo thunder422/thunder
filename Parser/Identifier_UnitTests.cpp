@@ -8,7 +8,7 @@
 #include <sstream>
 
 #include <Catch/catch.hpp>
-#include "Identifier.h"
+#include "Parser.h"
 
 using namespace std::string_view_literals;
 
@@ -19,7 +19,7 @@ TEST_CASE("parsing identifiers from a string", "[identifier]")
     {
         std::istringstream iss {"%"};
 
-        auto identifier = parseIdentifier(iss);
+        auto identifier = Parser{iss}.parseIdentifier();
 
         REQUIRE(identifier.empty());
     }
@@ -27,7 +27,7 @@ TEST_CASE("parsing identifiers from a string", "[identifier]")
     {
         std::istringstream iss {"P"};
 
-        auto identifier = parseIdentifier(iss);
+        auto identifier = Parser{iss}.parseIdentifier();
 
         REQUIRE(identifier == "P");
     }
@@ -35,7 +35,7 @@ TEST_CASE("parsing identifiers from a string", "[identifier]")
     {
         std::istringstream iss {"PRINT"};
 
-        auto identifier = parseIdentifier(iss);
+        auto identifier = Parser{iss}.parseIdentifier();
 
         REQUIRE(identifier == "PRINT");
     }
@@ -43,7 +43,7 @@ TEST_CASE("parsing identifiers from a string", "[identifier]")
     {
         std::istringstream iss {"VAR="};
 
-        auto identifier = parseIdentifier(iss);
+        auto identifier = Parser{iss}.parseIdentifier();
 
         REQUIRE(identifier == "VAR");
         REQUIRE(iss.peek() == '=');

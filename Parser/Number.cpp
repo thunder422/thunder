@@ -9,12 +9,12 @@
 #include <string>
 
 #include "Error.h"
-#include "Number.h"
+#include "Parser.h"
 
 
 class NumberParser {
 public:
-    NumberParser(std::istream &is);
+    NumberParser(Parser &parser);
 
     std::optional<double> operator()();
 
@@ -32,7 +32,7 @@ public:
     void ungetChar();
 
 private:
-    std::istream &is;
+    Parser &parser;
     unsigned column;
     void (NumberParser::*parse)(int next_char);
     bool is_floating_point;
@@ -40,13 +40,8 @@ private:
     std::string number;
 };
 
-std::optional<double> parseNumber(std::istream &is)
-{
-    return NumberParser{is}();
-}
-
-NumberParser::NumberParser(std::istream &is) :
-    is {is},
+NumberParser::NumberParser(Parser &parser) :
+    parser {parser},
     parse {&NumberParser::parseStart},
     is_floating_point {false},
     is_done {false}
@@ -56,8 +51,8 @@ NumberParser::NumberParser(std::istream &is) :
 std::optional<double> NumberParser::operator()()
 {
     do {
-        column = is.tellg();
-        auto next_char = is.peek();
+        column = parser.getColumn();
+        auto next_char = parser.peekNextChar();
         (this->*parse)(next_char);
     } while (!is_done);
 
@@ -168,12 +163,18 @@ bool NumberParser::isValidMantissaChar(int next_char)
 
 void NumberParser::addNextChar()
 {
-    number += is.get();
+    number += parser.getNextChar();
 }
 
 void NumberParser::ungetChar()
 {
-    is.unget();
+    parser.ungetChar();
     number.clear();
     is_done = true;
+}
+
+
+std::optional<double> Parser::parseNumber()
+{
+    return NumberParser{*this}();
 }
