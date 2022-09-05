@@ -12,6 +12,15 @@ add_executable(ProgramOpCode_UnitTests
 )
 add_covered_test(ProgramOpCode_UnitTests OpCode*)
 
+add_executable(ProgramCommandOpCode_UnitTests
+  CommandOpCode.h
+  CommandOpCode.cpp
+  CommandOpCode_UnitTests.cpp
+  OpCode.cpp
+  ${CATCH_SOURCES}
+)
+add_covered_test(ProgramCommandOpCode_UnitTests CommandOpCode*)
+
 add_executable(ProgramWord_UnitTests
   OpCode.cpp
   Word.h
