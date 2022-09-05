@@ -4,6 +4,16 @@
 # Distributed under GNU General Public License Version 3
 # (See accompanying file LICENSE or <http://www.gnu.org/licenses/>)
 
+set(PARSER_HEADERS
+  Error.h
+  Parser.h
+)
+set(PARSER_SOURCES
+  Identifier.cpp
+  Number.cpp
+)
+add_library(Parser OBJECT ${PARSER_HEADERS} ${PARSER_SOURCES})
+
 add_executable(ParseIdentifier_UnitTests
   Identifier.cpp
   Identifier_UnitTests.cpp

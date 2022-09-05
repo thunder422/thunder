@@ -32,4 +32,12 @@ TEST_CASE("command op code]", "[cmdopcode")
 
         REQUIRE(opcode == nullptr);
     }
+    SECTION("get command keyword")
+    {
+        CommandOpCode test_opcode {"test"};
+
+        auto keyword = CommandOpCode::getKeyword(test_opcode.getValue());
+
+        REQUIRE(keyword == "test");
+    }
 }

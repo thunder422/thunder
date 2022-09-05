@@ -13,6 +13,7 @@
 namespace {
 
 std::map<std::string_view, CommandOpCode *> command_codes;
+std::map<WordType, std::string_view> command_keywords;
 
 }
 
@@ -24,7 +25,13 @@ const CommandOpCode *CommandOpCode::find(std::string_view keyword)
     return nullptr;
 }
 
+std::string_view CommandOpCode::getKeyword(WordType opcode)
+{
+    return command_keywords[opcode];
+}
+
 CommandOpCode::CommandOpCode(std::string_view keyword)
 {
     command_codes[keyword] = this;
+    command_keywords[getValue()] = keyword;
 }

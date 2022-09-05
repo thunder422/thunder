@@ -14,6 +14,7 @@
 class CommandOpCode : public OpCode {
 public:
     static const CommandOpCode *find(std::string_view keyword);
+    static std::string_view getKeyword(WordType opcode);
 
     CommandOpCode(std::string_view keyword);
 };

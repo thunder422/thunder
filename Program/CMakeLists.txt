@@ -4,6 +4,16 @@
 # Distributed under GNU General Public License Version 3
 # (See accompanying file LICENSE or <http://www.gnu.org/licenses/>)
 
+set(PROGRAM_HEADERS
+  CommandOpCode.h
+  OpCode.h
+)
+set(PROGRAM_SOURCES
+  CommandOpCode.cpp
+  OpCode.cpp
+)
+add_library(Program OBJECT ${PROGRAM_HEADERS} ${PROGRAM_SOURCES})
+
 add_executable(ProgramOpCode_UnitTests
   OpCode.h
   OpCode.cpp
@@ -29,3 +39,15 @@ add_executable(ProgramWord_UnitTests
   ${CATCH_SOURCES}
 )
 add_covered_test(ProgramWord_UnitTests Word*)
+
+add_executable(ProgramCode_UnitTests
+  Code.h
+  Code.cpp
+  Code_UnitTests.cpp
+  ${CATCH_SOURCES}
+)
+target_link_libraries(ProgramCode_UnitTests
+  $<TARGET_OBJECTS:Parser>
+  $<TARGET_OBJECTS:Program>
+)
+add_covered_test(ProgramCode_UnitTests Code*)
