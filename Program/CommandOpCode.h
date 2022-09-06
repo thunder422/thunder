@@ -11,10 +11,14 @@
 #include "OpCode.h"
 
 
+class ProgramCode;
+using CompilerFunction = void(*)(ProgramCode &);
+
 class CommandOpCode : public OpCode {
 public:
     static const CommandOpCode *find(std::string_view keyword);
+    static void compile(const CommandOpCode opcode, ProgramCode &code);
     static std::string_view getKeyword(WordType opcode);
 
-    CommandOpCode(std::string_view keyword);
+    CommandOpCode(std::string_view keyword, CompilerFunction compile);
 };

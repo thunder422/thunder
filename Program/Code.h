@@ -23,6 +23,8 @@ public:
 
     std::string recreateLine(std::size_t line_offset);
 
+    void addOpcode(const OpCode &opcode);
+
 private:
     ProgramWords words;
 };

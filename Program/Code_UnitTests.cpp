@@ -9,16 +9,12 @@
 
 #include <Catch/catch.hpp>
 #include "Code.h"
-#include "CommandOpCode.h"
 
 using namespace std::string_view_literals;
 
 
 TEST_CASE("compile line", "[compile]")
 {
-    CommandOpCode print_opcode {"print"};
-    CommandOpCode end_opcode {"end"};
-
     SECTION("compile and recreate a simple print statement")
     {
         std::istringstream iss {"print"};

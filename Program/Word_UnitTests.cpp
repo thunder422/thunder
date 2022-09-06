@@ -6,7 +6,6 @@
  */
 
 #include <Catch/catch.hpp>
-#include "CommandOpCode.h"
 #include "Word.h"
 
 
@@ -27,13 +26,5 @@ TEST_CASE("generate program words", "[words]")
         ProgramWord word {15};
 
         REQUIRE(word == 15);
-    }
-    SECTION("add a command op code")
-    {
-        CommandOpCode command_opcode {"test"};
-
-        ProgramWord word {command_opcode};
-
-        REQUIRE(word == command_opcode.getValue());
     }
 }

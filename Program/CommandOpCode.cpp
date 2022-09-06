@@ -12,26 +12,42 @@
 
 namespace {
 
-std::map<std::string_view, CommandOpCode *> command_codes;
-std::map<WordType, std::string_view> command_keywords;
+class Command {
+public:
+    std::map<std::string_view, CommandOpCode *> codes;
+    std::map<WordType, std::string_view> keywords;
+    std::map<WordType, CompilerFunction> compile_functions;
+};
 
+Command &command()
+{
+    static Command command;
+    return command;
 }
+
+}  // namespace
 
 const CommandOpCode *CommandOpCode::find(std::string_view keyword)
 {
-    if (auto it = command_codes.find(keyword); it != command_codes.end()) {
+    if (auto it = command().codes.find(keyword); it != command().codes.end()) {
         return it->second;
     }
     return nullptr;
 }
 
-std::string_view CommandOpCode::getKeyword(WordType opcode)
+void CommandOpCode::compile(const CommandOpCode opcode, ProgramCode &code)
 {
-    return command_keywords[opcode];
+    command().compile_functions[opcode.getValue()](code);
 }
 
-CommandOpCode::CommandOpCode(std::string_view keyword)
+std::string_view CommandOpCode::getKeyword(WordType opcode)
 {
-    command_codes[keyword] = this;
-    command_keywords[getValue()] = keyword;
+    return command().keywords[opcode];
+}
+
+CommandOpCode::CommandOpCode(std::string_view keyword, CompilerFunction compile)
+{
+    command().codes[keyword] = this;
+    command().keywords[getValue()] = keyword;
+    command().compile_functions[getValue()] = compile;
 }

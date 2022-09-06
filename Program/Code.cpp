@@ -16,11 +16,32 @@ ProgramCode::ProgramCode(std::istream &is)
     Parser parser {is};
     auto keyword = parser.parseIdentifier();
     auto command_opcode = CommandOpCode::find(keyword);
-    words.emplace_back(*command_opcode);
+    CommandOpCode::compile(*command_opcode, *this);
 }
 
 std::string ProgramCode::recreateLine(std::size_t line_offset)
 {
     std::string line {CommandOpCode::getKeyword(words[line_offset])};
     return line;
+}
+
+void ProgramCode::addOpcode(const OpCode &opcode)
+{
+    words.emplace_back(opcode);
+}
+
+void compilePrint(ProgramCode &code);
+void compileEnd(ProgramCode &code);
+
+CommandOpCode print_opcode {"print", compilePrint};
+CommandOpCode end_opcode {"end", compileEnd};
+
+void compilePrint(ProgramCode &code)
+{
+    code.addOpcode(print_opcode);
+}
+
+void compileEnd(ProgramCode &code)
+{
+    code.addOpcode(end_opcode);
 }

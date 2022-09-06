@@ -9,22 +9,47 @@
 #include "CommandOpCode.h"
 
 
+class ProgramCode { };
+
+bool compile_was_called;
+
+void testCompileFunction(ProgramCode &)
+{
+    compile_was_called = true;
+}
+
 TEST_CASE("command op code]", "[cmdopcode")
 {
     SECTION("instantiate a command op code with a name")
     {
-        CommandOpCode test_opcode {"test"};
+        CommandOpCode test_opcode {"test", testCompileFunction};
 
         REQUIRE(test_opcode.getValue() == 0);
     }
     SECTION("find a valid command from a keyword")
     {
-        CommandOpCode print_opcode {"print"};
-        CommandOpCode end_opcode {"end"};
+        CommandOpCode print_opcode {"print", testCompileFunction};
+        CommandOpCode end_opcode {"end", testCompileFunction};
 
-        auto opcode = CommandOpCode::find("end");
+        SECTION("find an opcode")
+        {
+            auto opcode = CommandOpCode::find("end");
 
-        REQUIRE(opcode->getValue() == end_opcode.getValue());
+            REQUIRE(opcode->getValue() == end_opcode.getValue());
+        }
+        SECTION("compile an opcode")
+        {
+            ProgramCode dummy_code;
+            compile_was_called = false;
+
+            CommandOpCode::compile(end_opcode, dummy_code);
+
+            REQUIRE(compile_was_called);
+        }
+        SECTION("get keyword for an opcode")
+        {
+            REQUIRE(CommandOpCode::getKeyword(end_opcode.getValue()) == "end");
+        }
     }
     SECTION("null pointer if keyword is not a command")
     {
@@ -34,7 +59,7 @@ TEST_CASE("command op code]", "[cmdopcode")
     }
     SECTION("get command keyword")
     {
-        CommandOpCode test_opcode {"test"};
+        CommandOpCode test_opcode {"test", testCompileFunction};
 
         auto keyword = CommandOpCode::getKeyword(test_opcode.getValue());
 
