@@ -5,6 +5,7 @@
  * (See accompanying file LICENSE or <http://www.gnu.org/licenses/>)
  */
 
+#include <map>
 #include "OpCode.h"
 
 namespace {
@@ -18,9 +19,26 @@ WordType generateNewOpCode()
     return new_opcode;
 }
 
+class Table {
+public:
+    std::map<WordType, RecreateFunction> recreate_functions;
+};
+
+Table &table()
+{
+    static Table table;
+    return table;
+};
+
 }  // namespace
 
-OpCode::OpCode() :
+void OpCode::recreate(WordType opcode, Recreator &recreator)
+{
+    table().recreate_functions[opcode](recreator);
+}
+
+OpCode::OpCode(RecreateFunction recreate_function) :
     value {generateNewOpCode()}
 {
+    table().recreate_functions[getValue()] = recreate_function;
 }

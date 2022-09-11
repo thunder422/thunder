@@ -9,27 +9,39 @@
 #include "CommandOpCode.h"
 
 
-class ProgramCode { };
+class ProgramCode {
+public:
+    bool was_called {false};
+};
 
-bool compile_was_called;
-
-void testCompileFunction(ProgramCode &)
+void compileCode(ProgramCode &code)
 {
-    compile_was_called = true;
+    code.was_called = true;
 }
+
+class Recreator {
+public:
+    bool was_called {false};
+};
+
+void recreateCode(Recreator &recreator)
+{
+    recreator.was_called = true;
+}
+
 
 TEST_CASE("command op code]", "[cmdopcode")
 {
     SECTION("instantiate a command op code with a name")
     {
-        CommandOpCode test_opcode {"test", testCompileFunction};
+        CommandOpCode test_opcode {"test", compileCode, recreateCode};
 
         REQUIRE(test_opcode.getValue() == 0);
     }
     SECTION("find a valid command from a keyword")
     {
-        CommandOpCode print_opcode {"print", testCompileFunction};
-        CommandOpCode end_opcode {"end", testCompileFunction};
+        CommandOpCode print_opcode {"print", compileCode, recreateCode};
+        CommandOpCode end_opcode {"end", compileCode, recreateCode};
 
         SECTION("find an opcode")
         {
@@ -39,12 +51,11 @@ TEST_CASE("command op code]", "[cmdopcode")
         }
         SECTION("compile an opcode")
         {
-            ProgramCode dummy_code;
-            compile_was_called = false;
+            ProgramCode test_code;
 
-            CommandOpCode::compile(end_opcode, dummy_code);
+            CommandOpCode::compile(end_opcode, test_code);
 
-            REQUIRE(compile_was_called);
+            REQUIRE(test_code.was_called);
         }
         SECTION("get keyword for an opcode")
         {
@@ -57,12 +68,13 @@ TEST_CASE("command op code]", "[cmdopcode")
 
         REQUIRE(opcode == nullptr);
     }
-    SECTION("get command keyword")
+    SECTION("recreate mechanism")
     {
-        CommandOpCode test_opcode {"test", testCompileFunction};
+        Recreator test_recreator;
+        CommandOpCode command_opcode {"command", compileCode, recreateCode};
 
-        auto keyword = CommandOpCode::getKeyword(test_opcode.getValue());
+        OpCode::recreate(command_opcode.getValue(), test_recreator);
 
-        REQUIRE(keyword == "test");
+        REQUIRE(test_recreator.was_called);
     }
 }

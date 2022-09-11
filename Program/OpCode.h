@@ -11,10 +11,14 @@
 
 
 using WordType = uint16_t;
+class Recreator;
+using RecreateFunction = void(*)(Recreator &);
 
 class OpCode {
 public:
-    OpCode();
+    static void recreate(WordType opcode, Recreator &recreator);
+
+    OpCode(RecreateFunction recreate_function);
 
     WordType getValue() const;
 

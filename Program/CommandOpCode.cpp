@@ -45,9 +45,11 @@ std::string_view CommandOpCode::getKeyword(WordType opcode)
     return command().keywords[opcode];
 }
 
-CommandOpCode::CommandOpCode(std::string_view keyword, CompilerFunction compile)
+CommandOpCode::CommandOpCode(std::string_view keyword, CompilerFunction compile_function,
+        RecreateFunction recreate_function) :
+    OpCode {recreate_function}
 {
     command().codes[keyword] = this;
     command().keywords[getValue()] = keyword;
-    command().compile_functions[getValue()] = compile;
+    command().compile_functions[getValue()] = compile_function;
 }

@@ -7,10 +7,12 @@
 set(PROGRAM_HEADERS
   CommandOpCode.h
   OpCode.h
+  Recreator.h
 )
 set(PROGRAM_SOURCES
   CommandOpCode.cpp
   OpCode.cpp
+  Recreator.cpp
 )
 add_library(Program OBJECT ${PROGRAM_HEADERS} ${PROGRAM_SOURCES})
 
@@ -51,3 +53,12 @@ target_link_libraries(ProgramCode_UnitTests
   $<TARGET_OBJECTS:Program>
 )
 add_covered_test(ProgramCode_UnitTests Code*)
+
+add_executable(Recreator_UnitTests
+  Recreator_UnitTests.cpp
+  ${CATCH_SOURCES}
+)
+target_link_libraries(Recreator_UnitTests
+  $<TARGET_OBJECTS:Program>
+)
+add_covered_test(Recreator_UnitTests Recreator*)

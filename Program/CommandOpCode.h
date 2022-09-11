@@ -20,5 +20,6 @@ public:
     static void compile(const CommandOpCode opcode, ProgramCode &code);
     static std::string_view getKeyword(WordType opcode);
 
-    CommandOpCode(std::string_view keyword, CompilerFunction compile);
+    CommandOpCode(std::string_view keyword, CompilerFunction compile_function,
+        RecreateFunction recreate_function);
 };

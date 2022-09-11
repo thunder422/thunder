@@ -9,6 +9,7 @@
 #include <Parser/Parser.h>
 #include "Code.h"
 #include "CommandOpCode.h"
+#include "Recreator.h"
 
 
 ProgramCode::ProgramCode(std::istream &is)
@@ -21,8 +22,9 @@ ProgramCode::ProgramCode(std::istream &is)
 
 std::string ProgramCode::recreateLine(std::size_t line_offset)
 {
-    std::string line {CommandOpCode::getKeyword(words[line_offset])};
-    return line;
+    Recreator recreator;
+    OpCode::recreate(words[line_offset], recreator);
+    return recreator.getLine();
 }
 
 void ProgramCode::addOpcode(const OpCode &opcode)
@@ -33,8 +35,11 @@ void ProgramCode::addOpcode(const OpCode &opcode)
 void compilePrint(ProgramCode &code);
 void compileEnd(ProgramCode &code);
 
-CommandOpCode print_opcode {"print", compilePrint};
-CommandOpCode end_opcode {"end", compileEnd};
+void recreatePrint(Recreator &recreator);
+void recreateEnd(Recreator &recreator);
+
+CommandOpCode print_opcode {"print", compilePrint, recreatePrint};
+CommandOpCode end_opcode {"end", compileEnd, recreateEnd};
 
 void compilePrint(ProgramCode &code)
 {
@@ -44,4 +49,14 @@ void compilePrint(ProgramCode &code)
 void compileEnd(ProgramCode &code)
 {
     code.addOpcode(end_opcode);
+}
+
+void recreatePrint(Recreator &recreator)
+{
+    recreator.addCommandKeyword(print_opcode);
+}
+
+void recreateEnd(Recreator &recreator)
+{
+    recreator.addCommandKeyword(end_opcode);
 }
