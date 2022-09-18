@@ -10,9 +10,9 @@
 #include "Recreator.h"
 
 
-class ProgramCode { };
+class Compiler { };
 
-void compileTest(ProgramCode &)
+void compileTest(Compiler &)
 {
 }
 
@@ -38,7 +38,7 @@ TEST_CASE("recreator", "[recreator]")
     }
     SECTION("call compile code function to complete coverage")
     {
-        ProgramCode dummy_code;
-        compileTest(dummy_code);
+        Compiler dummy_compiler;
+        compileTest(dummy_compiler);
     }
 }

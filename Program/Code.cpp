@@ -6,6 +6,7 @@
  */
 
 #include <iostream>
+#include <Compiler/Compiler.h>
 #include <Parser/Parser.h>
 #include "Code.h"
 #include "CommandOpCode.h"
@@ -14,10 +15,8 @@
 
 ProgramCode::ProgramCode(std::istream &is)
 {
-    Parser parser {is};
-    auto keyword = parser.parseIdentifier();
-    auto command_opcode = CommandOpCode::find(keyword);
-    CommandOpCode::compile(*command_opcode, *this);
+    Compiler compiler {*this, is};
+    compiler.compileLine();
 }
 
 std::string ProgramCode::recreateLine(std::size_t line_offset)
@@ -27,13 +26,13 @@ std::string ProgramCode::recreateLine(std::size_t line_offset)
     return recreator.getLine();
 }
 
-void ProgramCode::addOpcode(const OpCode &opcode)
+void ProgramCode::addOpCode(const OpCode &opcode)
 {
     words.emplace_back(opcode);
 }
 
-void compilePrint(ProgramCode &code);
-void compileEnd(ProgramCode &code);
+void compilePrint(Compiler &compiler);
+void compileEnd(Compiler &compiler);
 
 void recreatePrint(Recreator &recreator);
 void recreateEnd(Recreator &recreator);
@@ -41,14 +40,15 @@ void recreateEnd(Recreator &recreator);
 CommandOpCode print_opcode {"print", compilePrint, recreatePrint};
 CommandOpCode end_opcode {"end", compileEnd, recreateEnd};
 
-void compilePrint(ProgramCode &code)
+void compilePrint(Compiler &compiler)
 {
-    code.addOpcode(print_opcode);
+    compiler.compileExpression();
+    compiler.addOpCode(print_opcode);
 }
 
-void compileEnd(ProgramCode &code)
+void compileEnd(Compiler &compiler)
 {
-    code.addOpcode(end_opcode);
+    compiler.addOpCode(end_opcode);
 }
 
 void recreatePrint(Recreator &recreator)

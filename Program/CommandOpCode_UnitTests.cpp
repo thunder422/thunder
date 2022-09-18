@@ -9,12 +9,12 @@
 #include "CommandOpCode.h"
 
 
-class ProgramCode {
+class Compiler {
 public:
     bool was_called {false};
 };
 
-void compileCode(ProgramCode &code)
+void compileCode(Compiler &code)
 {
     code.was_called = true;
 }
@@ -51,11 +51,11 @@ TEST_CASE("command op code]", "[cmdopcode")
         }
         SECTION("compile an opcode")
         {
-            ProgramCode test_code;
+            Compiler test_compiler;
 
-            CommandOpCode::compile(end_opcode, test_code);
+            CommandOpCode::compile(end_opcode, test_compiler);
 
-            REQUIRE(test_code.was_called);
+            REQUIRE(test_compiler.was_called);
         }
         SECTION("get keyword for an opcode")
         {

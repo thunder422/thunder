@@ -52,3 +52,4 @@ add_subdirectory(Catch)
 
 add_subdirectory(Parser)
 add_subdirectory(Program)
+add_subdirectory(Compiler)

@@ -35,9 +35,9 @@ const CommandOpCode *CommandOpCode::find(std::string_view keyword)
     return nullptr;
 }
 
-void CommandOpCode::compile(const CommandOpCode opcode, ProgramCode &code)
+void CommandOpCode::compile(const CommandOpCode opcode, Compiler &compiler)
 {
-    command().compile_functions[opcode.getValue()](code);
+    command().compile_functions[opcode.getValue()](compiler);
 }
 
 std::string_view CommandOpCode::getKeyword(WordType opcode)

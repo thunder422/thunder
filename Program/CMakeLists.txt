@@ -5,11 +5,13 @@
 # (See accompanying file LICENSE or <http://www.gnu.org/licenses/>)
 
 set(PROGRAM_HEADERS
+  Code.h
   CommandOpCode.h
   OpCode.h
   Recreator.h
 )
 set(PROGRAM_SOURCES
+  Code.cpp
   CommandOpCode.cpp
   OpCode.cpp
   Recreator.cpp
@@ -43,12 +45,11 @@ add_executable(ProgramWord_UnitTests
 add_covered_test(ProgramWord_UnitTests Word*)
 
 add_executable(ProgramCode_UnitTests
-  Code.h
-  Code.cpp
   Code_UnitTests.cpp
   ${CATCH_SOURCES}
 )
 target_link_libraries(ProgramCode_UnitTests
+  $<TARGET_OBJECTS:Compiler>
   $<TARGET_OBJECTS:Parser>
   $<TARGET_OBJECTS:Program>
 )
@@ -59,6 +60,8 @@ add_executable(Recreator_UnitTests
   ${CATCH_SOURCES}
 )
 target_link_libraries(Recreator_UnitTests
+  $<TARGET_OBJECTS:Compiler>
+  $<TARGET_OBJECTS:Parser>
   $<TARGET_OBJECTS:Program>
 )
 add_covered_test(Recreator_UnitTests Recreator*)
