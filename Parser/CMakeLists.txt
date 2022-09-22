@@ -11,6 +11,7 @@ set(PARSER_HEADERS
 set(PARSER_SOURCES
   Identifier.cpp
   Number.cpp
+  Parser.cpp
 )
 add_library(Parser OBJECT ${PARSER_HEADERS} ${PARSER_SOURCES})
 
@@ -29,3 +30,11 @@ add_executable(ParseNumber_UnitTests
   ${CATCH_SOURCES}
 )
 add_covered_test(ParseNumber_UnitTests Number*)
+
+add_executable(Parser_UnitTests
+  Parser.h
+  Parser.cpp
+  Parser_UnitTests.cpp
+  ${CATCH_SOURCES}
+)
+add_covered_test(Parser_UnitTests Parser*)

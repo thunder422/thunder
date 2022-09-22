@@ -21,14 +21,35 @@ ProgramCode::ProgramCode(std::istream &is)
 
 std::string ProgramCode::recreateLine(std::size_t line_offset)
 {
-    Recreator recreator;
-    OpCode::recreate(words[line_offset], recreator);
-    return recreator.getLine();
+    Recreator recreator {*this};
+    return recreator.recreateLine(line_offset);
 }
 
 void ProgramCode::addOpCode(const OpCode &opcode)
 {
     words.emplace_back(opcode);
+}
+
+WordType ProgramCode::addConstNum(double number)
+{
+    WordType index = const_nums.size();
+    const_nums.emplace_back(number);
+    return index;
+}
+
+void ProgramCode::addOperand(WordType operand)
+{
+    words.emplace_back(operand);
+}
+
+WordType ProgramCode::getWord(std::size_t offset) const
+{
+    return words[offset];
+}
+
+double ProgramCode::getConstNum(std::size_t index) const
+{
+    return const_nums[index];
 }
 
 void compilePrint(Compiler &compiler);

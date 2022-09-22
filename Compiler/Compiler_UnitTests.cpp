@@ -30,12 +30,12 @@ void recreateTest(Recreator &recreator)
 
 TEST_CASE("compile opcode", "[opcode]")
 {
-    ProgramCode code;
-    std::istringstream iss {"test"};
-    Compiler compiler {code, iss};
-
     SECTION("compile a command that adds a single opcode to the program")
     {
+        ProgramCode code;
+        std::istringstream iss {"test"};
+        Compiler compiler {code, iss};
+
         compiler.compileLine();
 
         auto line = code.recreateLine(0);
@@ -60,15 +60,15 @@ void recreateSecond(Recreator &recreator)
 
 TEST_CASE("compile expression", "[expression]")
 {
-    ProgramCode code;
-    std::istringstream iss {"second"};
-    Compiler compiler {code, iss};
-
     SECTION("compile a command that takes an expression")
     {
+        ProgramCode code;
+        std::istringstream iss {"second 123"};
+        Compiler compiler {code, iss};
+
         compiler.compileLine();
 
         auto line = code.recreateLine(0);
-        REQUIRE(line == "second");
+        REQUIRE(line == "second 123");
     }
 }

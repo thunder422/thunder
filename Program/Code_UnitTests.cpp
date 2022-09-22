@@ -30,3 +30,39 @@ TEST_CASE("compile line", "[compile]")
         REQUIRE(program_line.recreateLine(0) == "end");
     }
 }
+
+
+TEST_CASE("modify program", "[modify]")
+{
+    ProgramCode code;
+
+    SECTION("add constant numbers")
+    {
+        SECTION("first constant number has index of 0")
+        {
+            auto index = code.addConstNum(123);
+
+            REQUIRE(index == 0);
+        }
+        SECTION("second constant number has index of 1")
+        {
+            code.addConstNum(123);
+            auto index = code.addConstNum(456);
+
+            REQUIRE(index == 1);
+        }
+        SECTION("read constant number by index")
+        {
+            code.addConstNum(123);
+            code.addConstNum(456);
+
+            REQUIRE(code.getConstNum(1) == 456);
+        }
+    }
+    SECTION("add operand to code")
+    {
+        code.addOperand(135);
+
+        REQUIRE(code.getWord(0));
+    }
+}

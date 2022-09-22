@@ -15,6 +15,7 @@ class Parser {
 public:
     Parser(std::istream &is);
 
+    void skipWhiteSpace();
     std::string parseIdentifier();
     std::optional<double> parseNumber();
 

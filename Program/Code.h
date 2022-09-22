@@ -24,7 +24,12 @@ public:
     std::string recreateLine(std::size_t line_offset);
 
     void addOpCode(const OpCode &opcode);
+    WordType addConstNum(double number);
+    void addOperand(WordType operand);
+    WordType getWord(std::size_t offset) const;
+    double getConstNum(std::size_t index) const;
 
 private:
     ProgramWords words;
+    std::vector<double> const_nums;
 };

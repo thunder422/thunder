@@ -11,12 +11,20 @@
 
 
 class CommandOpCode;
+class ProgramCode;
 
 class Recreator {
 public:
+    Recreator(ProgramCode &code);
     void addCommandKeyword(CommandOpCode opcode);
-    std::string &&getLine();
+    std::size_t getOperand();
+    double getConstNum(std::size_t index);
+    void pushString(std::string string);
+    std::string &&recreateLine(std::size_t line_offset);
 
 private:
+    ProgramCode &code;
+    std::size_t offset;
     std::string line;
+    bool is_done {false};
 };
