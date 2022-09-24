@@ -15,9 +15,9 @@ Recreator::Recreator(ProgramCode &code) :
 {
 }
 
-void Recreator::addCommandKeyword(CommandOpCode opcode)
+void Recreator::addCommandKeyword()
 {
-    std::string string {opcode.getKeyword(opcode.getValue())};
+    std::string string {CommandOpCode::getKeyword(code.getWord(offset))};
     if (!line.empty()) {
         string.append(1, ' ').append(line);
     }

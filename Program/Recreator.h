@@ -16,7 +16,7 @@ class ProgramCode;
 class Recreator {
 public:
     Recreator(ProgramCode &code);
-    void addCommandKeyword(CommandOpCode opcode);
+    void addCommandKeyword();
     std::size_t getOperand();
     double getConstNum(std::size_t index);
     void pushString(std::string string);

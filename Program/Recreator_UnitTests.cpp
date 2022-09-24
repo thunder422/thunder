@@ -23,7 +23,7 @@ CommandOpCode test_opcode {"test", compileTest, recreateCode};
 
 void recreateCode(Recreator &recreator)
 {
-    recreator.addCommandKeyword(test_opcode);
+    recreator.addCommandKeyword();
 }
 
 void recreateNumber(Recreator &recreator);

@@ -24,7 +24,7 @@ void compileTest(Compiler &compiler)
 
 void recreateTest(Recreator &recreator)
 {
-    recreator.addCommandKeyword(test_opcode);
+    recreator.addCommandKeyword();
 }
 
 
@@ -55,7 +55,7 @@ void compileSecond(Compiler &compiler)
 
 void recreateSecond(Recreator &recreator)
 {
-    recreator.addCommandKeyword(second_opcode);
+    recreator.addCommandKeyword();
 }
 
 TEST_CASE("compile expression", "[expression]")

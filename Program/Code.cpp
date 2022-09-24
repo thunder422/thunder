@@ -55,11 +55,10 @@ double ProgramCode::getConstNum(std::size_t index) const
 void compilePrint(Compiler &compiler);
 void compileEnd(Compiler &compiler);
 
-void recreatePrint(Recreator &recreator);
-void recreateEnd(Recreator &recreator);
+void recreateCommand(Recreator &recreator);
 
-CommandOpCode print_opcode {"print", compilePrint, recreatePrint};
-CommandOpCode end_opcode {"end", compileEnd, recreateEnd};
+CommandOpCode print_opcode {"print", compilePrint, recreateCommand};
+CommandOpCode end_opcode {"end", compileEnd, recreateCommand};
 
 void compilePrint(Compiler &compiler)
 {
@@ -72,12 +71,7 @@ void compileEnd(Compiler &compiler)
     compiler.addOpCode(end_opcode);
 }
 
-void recreatePrint(Recreator &recreator)
+void recreateCommand(Recreator &recreator)
 {
-    recreator.addCommandKeyword(print_opcode);
-}
-
-void recreateEnd(Recreator &recreator)
-{
-    recreator.addCommandKeyword(end_opcode);
+    recreator.addCommandKeyword();
 }
