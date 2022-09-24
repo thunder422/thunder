@@ -5,7 +5,6 @@
  * (See accompanying file LICENSE or <http://www.gnu.org/licenses/>)
  */
 
-#include <charconv>
 #include <Program/Code.h>
 #include <Program/CommandOpCode.h>
 #include <Program/Recreator.h>
@@ -25,17 +24,7 @@ void Compiler::compileLine()
     CommandOpCode::compile(*command_opcode, *this);
 }
 
-void recreateConstNum(Recreator &recreator)
-{
-    auto index = recreator.getOperand();
-    auto number = recreator.getConstNum(index);
-
-    char string[20];
-    auto [end, error_code] = std::to_chars(string, string + sizeof(string), number);
-    recreator.pushString(std::string{string, end});
-}
-
-OpCode const_num_opcode {recreateConstNum};
+OpCode const_num_opcode;
 
 void Compiler::compileExpression()
 {

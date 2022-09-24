@@ -13,19 +13,7 @@
 #include "Compiler.h"
 
 
-void compileTest(Compiler &compiler);
-void recreateTest(Recreator &recreator);
-CommandOpCode test_opcode {"test", compileTest, recreateTest};
-
-void compileTest(Compiler &compiler)
-{
-    compiler.addOpCode(test_opcode);
-}
-
-void recreateTest(Recreator &recreator)
-{
-    recreator.addCommandKeyword();
-}
+extern CommandOpCode print_opcode;
 
 
 TEST_CASE("compile opcode", "[opcode]")
@@ -33,29 +21,13 @@ TEST_CASE("compile opcode", "[opcode]")
     SECTION("compile a command that adds a single opcode to the program")
     {
         ProgramCode code;
-        std::istringstream iss {"test"};
+        std::istringstream iss {"print"};
         Compiler compiler {code, iss};
 
         compiler.compileLine();
 
-        auto line = code.recreateLine(0);
-        REQUIRE(line == "test");
+        REQUIRE(code.recreateLine(0) == "print");
     }
-}
-
-void compileSecond(Compiler &compiler);
-void recreateSecond(Recreator &recreator);
-CommandOpCode second_opcode {"second", compileSecond, recreateSecond};
-
-void compileSecond(Compiler &compiler)
-{
-    compiler.compileExpression();
-    compiler.addOpCode(second_opcode);
-}
-
-void recreateSecond(Recreator &recreator)
-{
-    recreator.addCommandKeyword();
 }
 
 TEST_CASE("compile expression", "[expression]")
@@ -63,12 +35,11 @@ TEST_CASE("compile expression", "[expression]")
     SECTION("compile a command that takes an expression")
     {
         ProgramCode code;
-        std::istringstream iss {"second 123"};
+        std::istringstream iss {"print 123"};
         Compiler compiler {code, iss};
 
         compiler.compileLine();
 
-        auto line = code.recreateLine(0);
-        REQUIRE(line == "second 123");
+        REQUIRE(code.recreateLine(0) == "print 123");
     }
 }

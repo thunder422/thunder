@@ -19,29 +19,19 @@ void compileCode(Compiler &code)
     code.was_called = true;
 }
 
-class Recreator {
-public:
-    bool was_called {false};
-};
-
-void recreateCode(Recreator &recreator)
-{
-    recreator.was_called = true;
-}
-
 
 TEST_CASE("command op code]", "[cmdopcode")
 {
     SECTION("instantiate a command op code with a name")
     {
-        CommandOpCode test_opcode {"test", compileCode, recreateCode};
+        CommandOpCode test_opcode {"test", compileCode};
 
         REQUIRE(test_opcode.getValue() == 0);
     }
     SECTION("find a valid command from a keyword")
     {
-        CommandOpCode print_opcode {"print", compileCode, recreateCode};
-        CommandOpCode end_opcode {"end", compileCode, recreateCode};
+        CommandOpCode print_opcode {"print", compileCode};
+        CommandOpCode end_opcode {"end", compileCode};
 
         SECTION("find an opcode")
         {
@@ -67,14 +57,5 @@ TEST_CASE("command op code]", "[cmdopcode")
         auto opcode = CommandOpCode::find("bad");
 
         REQUIRE(opcode == nullptr);
-    }
-    SECTION("recreate mechanism")
-    {
-        Recreator test_recreator;
-        CommandOpCode command_opcode {"command", compileCode, recreateCode};
-
-        OpCode::recreate(command_opcode.getValue(), test_recreator);
-
-        REQUIRE(test_recreator.was_called);
     }
 }

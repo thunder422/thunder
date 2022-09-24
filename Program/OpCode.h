@@ -11,14 +11,12 @@
 
 
 using WordType = uint16_t;
-class Recreator;
-using RecreateFunction = void(*)(Recreator &);
 
 class OpCode {
 public:
-    static void recreate(WordType opcode, Recreator &recreator);
+    static std::size_t getCount();
 
-    OpCode(RecreateFunction recreate_function);
+    OpCode();
 
     WordType getValue() const;
 

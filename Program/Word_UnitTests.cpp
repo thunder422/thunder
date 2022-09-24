@@ -9,22 +9,11 @@
 #include "Word.h"
 
 
-class Recreator {
-public:
-    bool was_called {false};
-};
-
-
-void recreateCode(Recreator &recreator)
-{
-    recreator.was_called = true;
-}
-
 TEST_CASE("generate program words", "[words]")
 {
-    OpCode first_opcode {recreateCode};
-    OpCode second_opcode {recreateCode};
-    OpCode third_opcode {recreateCode};
+    OpCode first_opcode;
+    OpCode second_opcode;
+    OpCode third_opcode;
 
     SECTION("create a program word from a code")
     {
@@ -37,13 +26,5 @@ TEST_CASE("generate program words", "[words]")
         ProgramWord word {15};
 
         REQUIRE(word == 15);
-    }
-    SECTION("recreate mechanism")
-    {
-        Recreator test_recreator;
-
-        OpCode::recreate(third_opcode.getValue(), test_recreator);
-
-        REQUIRE(test_recreator.was_called);
     }
 }

@@ -19,26 +19,14 @@ WordType generateNewOpCode()
     return new_opcode;
 }
 
-class Table {
-public:
-    std::vector<RecreateFunction> recreate_functions;
-};
-
-Table &table()
-{
-    static Table table;
-    return table;
-};
-
 }  // namespace
 
-void OpCode::recreate(WordType opcode, Recreator &recreator)
+std::size_t OpCode::getCount()
 {
-    table().recreate_functions[opcode](recreator);
+    return opcode_count;
 }
 
-OpCode::OpCode(RecreateFunction recreate_function) :
+OpCode::OpCode() :
     value {generateNewOpCode()}
 {
-    table().recreate_functions.emplace_back(recreate_function);
 }

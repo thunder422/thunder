@@ -9,37 +9,22 @@
 #include "OpCode.h"
 
 
-class Recreator {
-public:
-    bool was_called {false};
-};
-
-void recreateCode(Recreator &recreator)
-{
-    recreator.was_called = true;
-}
-
 TEST_CASE("generate unique codes for each unique program element", "[opcodes]")
 {
     SECTION("first op code has value of zero")
     {
-        OpCode first_opcode {recreateCode};
+        OpCode first_opcode;
 
         REQUIRE(first_opcode.getValue() == 0);
     }
     SECTION("second op code has next value")
     {
-        OpCode second_opcode {recreateCode};
+        OpCode second_opcode;
 
         REQUIRE(second_opcode.getValue() == 1);
     }
-    SECTION("recreate mechanism")
+    SECTION("number of opcodes")
     {
-        Recreator test_recreator;
-        OpCode third_opcode {recreateCode};
-
-        OpCode::recreate(third_opcode.getValue(), test_recreator);
-
-        REQUIRE(test_recreator.was_called);
+        REQUIRE(OpCode::getCount() > 0);
     }
 }

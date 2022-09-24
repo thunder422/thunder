@@ -11,32 +11,8 @@
 #include "Recreator.h"
 
 
-class Compiler { };
-
-void compileTest(Compiler &)
-{
-}
-
-void recreateCode(Recreator &recreator);
-
-CommandOpCode test_opcode {"test", compileTest, recreateCode};
-
-void recreateCode(Recreator &recreator)
-{
-    recreator.addCommandKeyword();
-}
-
-void recreateNumber(Recreator &recreator);
-
-OpCode test_num_opcode {recreateNumber};
-
-void recreateNumber(Recreator &recreator)
-{
-    auto index = recreator.getOperand();
-    auto number = recreator.getConstNum(index);
-    recreator.pushString(std::to_string(number));
-}
-
+extern CommandOpCode print_opcode;
+extern OpCode const_num_opcode;
 
 TEST_CASE("recreator", "[recreator]")
 {
@@ -45,26 +21,21 @@ TEST_CASE("recreator", "[recreator]")
 
     SECTION("add a command keyword to the line")
     {
-        code.addOpCode(test_opcode);
+        code.addOpCode(print_opcode);
 
         auto line = recreator.recreateLine(0);
 
-        REQUIRE(line == "test");
-    }
-    SECTION("call compile code function to complete coverage")
-    {
-        Compiler dummy_compiler;
-        compileTest(dummy_compiler);
+        REQUIRE(line == "print");
     }
     SECTION("add string")
     {
-        code.addOpCode(test_num_opcode);
+        code.addOpCode(const_num_opcode);
         auto index = code.addConstNum(123.45);
         code.addOperand(index);
-        code.addOpCode(test_opcode);
+        code.addOpCode(print_opcode);
 
         auto line = recreator.recreateLine(0);
 
-        REQUIRE(line == "test 123.450000");
+        REQUIRE(line == "print 123.45");
     }
 }

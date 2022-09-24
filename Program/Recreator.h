@@ -28,3 +28,5 @@ private:
     std::string line;
     bool is_done {false};
 };
+
+using RecreateFunction = void(*)(Recreator &);
