@@ -9,6 +9,7 @@
 
 #include <iosfwd>
 #include <Parser/Parser.h>
+#include <Program/WordType.h>
 
 
 class OpCode;
@@ -16,6 +17,8 @@ class ProgramCode;
 
 class Compiler {
 public:
+    static std::string_view getCommandKeyword(WordType opcode);
+
     Compiler(ProgramCode &code, std::istream &is);
     void compileLine();
     void compileExpression();

@@ -8,23 +8,6 @@
 #pragma once
 
 #include <cstdint>
-#include "WordType.h"
 
 
-class OpCode {
-public:
-    static std::size_t getCount();
-
-    OpCode();
-
-    WordType getValue() const;
-
-private:
-    WordType value;
-};
-
-
-inline WordType OpCode::getValue() const
-{
-    return value;
-}
+using WordType = uint16_t;

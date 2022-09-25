@@ -7,11 +7,10 @@
 
 #include <Catch/catch.hpp>
 #include "Code.h"
-#include "CommandOpCode.h"
 #include "Recreator.h"
 
 
-extern CommandOpCode print_opcode;
+extern OpCode print_opcode;
 extern OpCode const_num_opcode;
 
 TEST_CASE("recreator", "[recreator]")

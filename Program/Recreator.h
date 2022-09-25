@@ -10,7 +10,6 @@
 #include <string>
 
 
-class CommandOpCode;
 class ProgramCode;
 
 class Recreator {
@@ -28,5 +27,3 @@ private:
     std::string line;
     bool is_done {false};
 };
-
-using RecreateFunction = void(*)(Recreator &);

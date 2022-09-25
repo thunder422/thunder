@@ -6,13 +6,15 @@
  */
 
 #include <charconv>
+#include <Compiler/Compiler.h>
 #include "Code.h"
-#include "CommandOpCode.h"
 #include "Recreator.h"
 
 
-extern CommandOpCode print_opcode;
-extern CommandOpCode end_opcode;
+using RecreateFunction = void(*)(Recreator &);
+
+extern OpCode print_opcode;
+extern OpCode end_opcode;
 extern OpCode const_num_opcode;
 
 namespace {
@@ -32,8 +34,8 @@ public:
 RecreateFunctions::RecreateFunctions(std::initializer_list<OpCodeRecreate> initializers) :
     functions(OpCode::getCount())
 {
-    for (auto &initializer : initializers) {
-        functions[initializer.opcode.getValue()] = initializer.function;
+    for (auto &[opcode, function] : initializers) {
+        functions[opcode.getValue()] = function;
     }
 }
 
@@ -71,7 +73,7 @@ Recreator::Recreator(ProgramCode &code) :
 
 void Recreator::addCommandKeyword()
 {
-    std::string string {CommandOpCode::getKeyword(code.getWord(offset))};
+    std::string string {Compiler::getCommandKeyword(code.getWord(offset))};
     if (!line.empty()) {
         string.append(1, ' ').append(line);
     }

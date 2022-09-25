@@ -9,7 +9,6 @@
 #include <Compiler/Compiler.h>
 #include <Parser/Parser.h>
 #include "Code.h"
-#include "CommandOpCode.h"
 #include "Recreator.h"
 
 
@@ -50,21 +49,4 @@ WordType ProgramCode::getWord(std::size_t offset) const
 double ProgramCode::getConstNum(std::size_t index) const
 {
     return const_nums[index];
-}
-
-void compilePrint(Compiler &compiler);
-void compileEnd(Compiler &compiler);
-
-CommandOpCode print_opcode {"print", compilePrint};
-CommandOpCode end_opcode {"end", compileEnd};
-
-void compilePrint(Compiler &compiler)
-{
-    compiler.compileExpression();
-    compiler.addOpCode(print_opcode);
-}
-
-void compileEnd(Compiler &compiler)
-{
-    compiler.addOpCode(end_opcode);
 }

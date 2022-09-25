@@ -6,13 +6,11 @@
 
 set(PROGRAM_HEADERS
   Code.h
-  CommandOpCode.h
   OpCode.h
   Recreator.h
 )
 set(PROGRAM_SOURCES
   Code.cpp
-  CommandOpCode.cpp
   OpCode.cpp
   Recreator.cpp
 )
@@ -26,17 +24,7 @@ add_executable(ProgramOpCode_UnitTests
 )
 add_covered_test(ProgramOpCode_UnitTests OpCode*)
 
-add_executable(ProgramCommandOpCode_UnitTests
-  CommandOpCode.h
-  CommandOpCode.cpp
-  CommandOpCode_UnitTests.cpp
-  OpCode.cpp
-  ${CATCH_SOURCES}
-)
-add_covered_test(ProgramCommandOpCode_UnitTests CommandOpCode*)
-
 add_executable(ProgramWord_UnitTests
-  CommandOpCode.cpp
   OpCode.cpp
   Word.h
   Word_UnitTests.cpp
