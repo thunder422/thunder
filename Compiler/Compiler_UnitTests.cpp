@@ -16,11 +16,11 @@
 extern OpCode print_opcode;
 
 
-TEST_CASE("compile print command", "[print]")
+TEST_CASE("compile a command", "[compile]")
 {
     ProgramCode code;
 
-    SECTION("compile a simple print command with no arguments")
+    SECTION("compile a simple command with no arguments")
     {
         std::istringstream iss {"print"};
         Compiler compiler {code, iss};
@@ -29,7 +29,7 @@ TEST_CASE("compile print command", "[print]")
 
         REQUIRE(code.recreateLine(0) == "print");
     }
-    SECTION("compile a print command with a single constant")
+    SECTION("compile a command with a single constant")
     {
         std::istringstream iss {"print 123"};
         Compiler compiler {code, iss};
@@ -37,21 +37,6 @@ TEST_CASE("compile print command", "[print]")
         compiler.compileLine();
 
         REQUIRE(code.recreateLine(0) == "print 123");
-    }
-}
-
-TEST_CASE("compile end command", "[end]")
-{
-    ProgramCode code;
-
-    SECTION("compile a simple end command")
-    {
-        std::istringstream iss {"end"};
-        Compiler compiler {code, iss};
-
-        compiler.compileLine();
-
-        REQUIRE(code.recreateLine(0) == "end");
     }
 }
 

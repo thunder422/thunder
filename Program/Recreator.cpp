@@ -6,38 +6,11 @@
  */
 
 #include <charconv>
-#include <Compiler/Compiler.h>
 #include "Code.h"
+#include "Commands.h"
+#include "OpCodes.h"
 #include "Recreator.h"
 
-
-using RecreateFunction = void(*)(Recreator &);
-
-extern OpCode print_opcode;
-extern OpCode end_opcode;
-extern OpCode const_num_opcode;
-
-namespace {
-
-struct OpCodeRecreate {
-    OpCode opcode;
-    RecreateFunction function;
-};
-
-class RecreateFunctions {
-public:
-    RecreateFunctions(std::initializer_list<OpCodeRecreate> initializers);
-
-    std::vector<RecreateFunction> functions;
-};
-
-RecreateFunctions::RecreateFunctions(std::initializer_list<OpCodeRecreate> initializers) :
-    functions(OpCode::getCount())
-{
-    for (auto &[opcode, function] : initializers) {
-        functions[opcode.getValue()] = function;
-    }
-}
 
 void recreateCommand(Recreator &recreator)
 {
@@ -54,18 +27,6 @@ void recreateConstNum(Recreator &recreator)
     recreator.pushString(std::string{string, end});
 }
 
-void recreate(WordType opcode, Recreator &recreator)
-{
-    static RecreateFunctions table {
-        {print_opcode, recreateCommand},
-        {end_opcode, recreateCommand},
-        {const_num_opcode, recreateConstNum}
-    };
-    table.functions[opcode](recreator);
-}
-
-}  // namespace
-
 Recreator::Recreator(ProgramCode &code) :
     code {code}
 {
@@ -73,7 +34,7 @@ Recreator::Recreator(ProgramCode &code) :
 
 void Recreator::addCommandKeyword()
 {
-    std::string string {Compiler::getCommandKeyword(code.getWord(offset))};
+    std::string string {Commands::getKeyword(code.getWord(offset))};
     if (!line.empty()) {
         string.append(1, ' ').append(line);
     }
@@ -101,7 +62,7 @@ std::string &&Recreator::recreateLine(std::size_t line_offset)
     offset = line_offset;
     while (!is_done) {
         auto opcode = code.getWord(offset);
-        recreate(opcode, *this);
+        OpCodes::getRecreateFunction(opcode)(*this);
         ++offset;
     }
     return std::move(line);
