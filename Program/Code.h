@@ -19,8 +19,8 @@ using ProgramWords = std::vector<ProgramWord>;
 class ProgramCode {
 public:
     ProgramCode() = default;
-    ProgramCode(std::istream &is);
 
+    void compileLine(std::istream &is);
     std::string recreateLine(std::size_t line_offset);
 
     void addOpCode(const OpCode &opcode);

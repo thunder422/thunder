@@ -12,7 +12,7 @@
 #include "Recreator.h"
 
 
-ProgramCode::ProgramCode(std::istream &is)
+void ProgramCode::compileLine(std::istream &is)
 {
     Compiler compiler {*this, is};
     compiler.compileLine();

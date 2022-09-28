@@ -14,8 +14,6 @@
 #include "Compiler.h"
 
 
-extern OpCode print_opcode;
-extern OpCode end_opcode;
 extern OpCode const_num_opcode;
 
 
@@ -36,7 +34,7 @@ void Compiler::compileLine()
     }
 }
 
-void Compiler::compileExpression()
+bool Compiler::compileExpression()
 {
     parser.skipWhiteSpace();
     auto number = parser.parseNumber();
@@ -44,7 +42,9 @@ void Compiler::compileExpression()
         code.addOpCode(const_num_opcode);
         auto index = code.addConstNum(*number);
         code.addOperand(index);
+        return true;
     }
+    return false;
 }
 
 void Compiler::addOpCode(OpCode opcode)

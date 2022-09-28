@@ -15,17 +15,19 @@ using namespace std::string_view_literals;
 
 TEST_CASE("compile line", "[compile]")
 {
+    ProgramCode program_line;
+
     SECTION("compile and recreate a simple print statement")
     {
         std::istringstream iss {"print"};
-        ProgramCode program_line {iss};
+        program_line.compileLine(iss);
 
         REQUIRE(program_line.recreateLine(0) == "print");
     }
     SECTION("compile and recreate an end statement")
     {
         std::istringstream iss {"end"};
-        ProgramCode program_line {iss};
+        program_line.compileLine(iss);
 
         REQUIRE(program_line.recreateLine(0) == "end");
     }

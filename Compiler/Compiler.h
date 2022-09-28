@@ -19,7 +19,7 @@ class Compiler {
 public:
     Compiler(ProgramCode &code, std::istream &is);
     void compileLine();
-    void compileExpression();
+    bool compileExpression();
     void addOpCode(OpCode opcode);
 
 private:

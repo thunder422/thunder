@@ -26,6 +26,7 @@ Commands::Commands(std::initializer_list<CommandOpCode> initializers)
 }
 
 OpCode print_opcode;
+OpCode print_num_opcode;
 OpCode end_opcode;
 
 void compilePrint(Compiler &compiler);
@@ -61,7 +62,9 @@ std::string_view Commands::getKeyword(WordType opcode)
 
 void compilePrint(Compiler &compiler)
 {
-    compiler.compileExpression();
+    if (compiler.compileExpression()) {
+        compiler.addOpCode(print_num_opcode);
+    }
     compiler.addOpCode(print_opcode);
 }
 

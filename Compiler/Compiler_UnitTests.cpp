@@ -13,9 +13,6 @@
 #include "Compiler.h"
 
 
-extern OpCode print_opcode;
-
-
 TEST_CASE("compile a command", "[compile]")
 {
     ProgramCode code;

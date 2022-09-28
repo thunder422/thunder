@@ -14,12 +14,16 @@
 struct AllOpCode;
 class Recreator;
 using RecreateFunction = void(*)(Recreator &);
+class Runner;
+using RunFunction = void(*)(Runner &);
 
 class OpCodes {
 public:
     OpCodes(std::initializer_list<AllOpCode> initializers);
     static RecreateFunction getRecreateFunction(WordType opcode);
+    static RunFunction getRunFunction(WordType opcode);
 
 private:
     std::vector<RecreateFunction> recreate_functions;
+    std::vector<RunFunction> run_functions;
 };

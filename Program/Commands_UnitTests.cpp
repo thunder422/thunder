@@ -36,6 +36,12 @@ TEST_CASE("commands", "[commands]")
 
         REQUIRE(print_compile_function == compilePrint);
     }
+    SECTION("get keyword for an opcode")
+    {
+        auto opcode = Commands::getOpCode("print");
+
+        REQUIRE(Commands::getKeyword(opcode->getValue()) == "print");
+    }
     SECTION("compile print command")
     {
         ProgramCode code;
@@ -47,6 +53,17 @@ TEST_CASE("commands", "[commands]")
 
         REQUIRE(code.recreateLine(0) == "print");
     }
+    SECTION("compile print with expression command")
+    {
+        ProgramCode code;
+        std::istringstream iss {" 543.21"};
+        Compiler compiler {code, iss};
+        auto opcode = Commands::getOpCode("print");
+
+        Commands::getCompileFunction(*opcode)(compiler);
+
+        REQUIRE(code.recreateLine(0) == "print 543.21");
+    }
     SECTION("compile end")
     {
         ProgramCode code;
@@ -57,11 +74,5 @@ TEST_CASE("commands", "[commands]")
         Commands::getCompileFunction(*opcode)(compiler);
 
         REQUIRE(code.recreateLine(0) == "end");
-    }
-    SECTION("get keyword for an opcode")
-    {
-        auto opcode = Commands::getOpCode("print");
-
-        REQUIRE(Commands::getKeyword(opcode->getValue()) == "print");
     }
 }
