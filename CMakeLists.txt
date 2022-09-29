@@ -53,3 +53,9 @@ add_subdirectory(Catch)
 add_subdirectory(Parser)
 add_subdirectory(Program)
 add_subdirectory(Compiler)
+add_subdirectory(Console)
+
+add_executable(thunder main.cpp)
+target_link_libraries(thunder
+  $<TARGET_OBJECTS:Console>
+)
