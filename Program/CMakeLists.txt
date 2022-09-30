@@ -11,6 +11,7 @@ set(PROGRAM_HEADERS
   OpCodes.h
   Recreator.h
   Runner.h
+  Unit.h
 )
 set(PROGRAM_SOURCES
   Code.cpp
@@ -19,6 +20,7 @@ set(PROGRAM_SOURCES
   OpCodes.cpp
   Recreator.cpp
   Runner.cpp
+  Unit.cpp
 )
 add_library(Program OBJECT ${PROGRAM_HEADERS} ${PROGRAM_SOURCES})
 
@@ -92,3 +94,14 @@ target_link_libraries(Runner_UnitTests
   $<TARGET_OBJECTS:Program>
 )
 add_covered_test(Runner_UnitTests Runner*)
+
+add_executable(ProgramUnit_UnitTests
+  Unit_UnitTests.cpp
+  ${CATCH_SOURCES}
+)
+target_link_libraries(ProgramUnit_UnitTests
+  $<TARGET_OBJECTS:Compiler>
+  $<TARGET_OBJECTS:Parser>
+  $<TARGET_OBJECTS:Program>
+)
+add_covered_test(ProgramUnit_UnitTests Unit*)

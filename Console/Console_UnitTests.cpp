@@ -28,4 +28,17 @@ TEST_CASE("console", "[console]")
         };
         REQUIRE(oss.str() == expected_output);
     }
+    SECTION("list the default program containing the automatic end statement and exit")
+    {
+        iss.str("l\nq\n");
+
+        console.run();
+
+        auto expected_output {
+            "Ready\n"
+            ":1 end\n"
+            ":Good-bye.\n"
+        };
+        REQUIRE(oss.str() == expected_output);
+    }
 }

@@ -17,11 +17,19 @@ Console::Console(std::istream &is, std::ostream &os) :
 
 void Console::run()
 {
+    bool issue_ready_prompt = true;
     for (bool is_running {true}; is_running; ) {
-        os << "Ready" << std::endl;
+        if (issue_ready_prompt) {
+            os << "Ready" << std::endl;
+            issue_ready_prompt = false;
+        }
         std::string command;
         os << ":" << std::flush;
         std::getline(is, command);
+        if (command == "l") {
+            auto line = program.recreateLine(0);
+            os << line << std::endl;
+        }
         if (command == "q") {
             is_running = false;
         }

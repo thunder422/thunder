@@ -7,17 +7,17 @@
 
 #pragma once
 
-#include <iosfwd>
-#include "Program/Unit.h"
+#include <string>
+#include "Code.h"
 
 
-class Console {
+class ProgramUnit {
 public:
-    Console(std::istream &is, std::ostream &os);
-    void run();
+    ProgramUnit();
+    std::string recreateLine(std::size_t line);
 
 private:
-    std::istream &is;
-    std::ostream &os;
-    ProgramUnit program;
+    std::size_t getOffset(std::size_t line);
+
+    ProgramCode code;
 };
