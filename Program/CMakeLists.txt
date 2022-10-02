@@ -26,11 +26,12 @@ add_library(Program OBJECT ${PROGRAM_HEADERS} ${PROGRAM_SOURCES})
 
 add_executable(Runner_UnitTests
   Runner_UnitTests.cpp
-  ${CATCH_SOURCES}
 )
 target_link_libraries(Runner_UnitTests
+  PUBLIC
   $<TARGET_OBJECTS:Compiler>
   $<TARGET_OBJECTS:Parser>
   $<TARGET_OBJECTS:Program>
+  PRIVATE Catch2::Catch2WithMain
 )
 add_covered_test(Runner_UnitTests)

@@ -19,14 +19,14 @@ add_executable(Identifier_UnitTests
   Identifier.cpp
   Identifier_UnitTests.cpp
   Parser.h
-  ${CATCH_SOURCES}
 )
+target_link_libraries(Identifier_UnitTests PRIVATE Catch2::Catch2WithMain)
 add_covered_test(Identifier_UnitTests)
 
 add_executable(Number_UnitTests
   Number.cpp
   Number_UnitTests.cpp
   Parser.h
-  ${CATCH_SOURCES}
 )
+target_link_libraries(Number_UnitTests PRIVATE Catch2::Catch2WithMain)
 add_covered_test(Number_UnitTests)

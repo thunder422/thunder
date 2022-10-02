@@ -5,8 +5,9 @@
  * (See accompanying file LICENSE or <http://www.gnu.org/licenses/>)
  */
 
-#include <Catch/catch.hpp>
 #include <sstream>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_exception.hpp>
 #include <Parser/Error.h>
 #include <Program/Code.h>
 #include <Program/Recreator.h>

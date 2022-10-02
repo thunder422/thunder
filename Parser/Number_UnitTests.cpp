@@ -6,8 +6,8 @@
  */
 
 #include <sstream>
-
-#include <Catch/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_exception.hpp>
 #include "Error.h"
 #include "Parser.h"
 

@@ -33,6 +33,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/Cmake/Modules)
 
 enable_testing()
 
+find_package(Catch2 3 REQUIRED)
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   find_program(LCOV_PROGRAM lcov)
   find_program(GENHTML_PROGRAM genhtml)
@@ -55,8 +57,6 @@ if(THUNDER_COVERAGE)
 endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-
-add_subdirectory(Catch)
 
 add_covered_subdirectory(Parser)
 add_covered_subdirectory(Program)

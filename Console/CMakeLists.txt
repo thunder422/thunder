@@ -16,11 +16,12 @@ add_executable(Console_UnitTests
   Console.h
   Console.cpp
   Console_UnitTests.cpp
-  ${CATCH_SOURCES}
 )
 target_link_libraries(Console_UnitTests
+  PUBLIC
   $<TARGET_OBJECTS:Compiler>
   $<TARGET_OBJECTS:Parser>
   $<TARGET_OBJECTS:Program>
+  PRIVATE Catch2::Catch2WithMain
 )
 add_covered_test(Console_UnitTests)

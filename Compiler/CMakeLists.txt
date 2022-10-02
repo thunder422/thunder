@@ -16,10 +16,11 @@ add_executable(Compiler_UnitTests
   Compiler.h
   Compiler.cpp
   Compiler_UnitTests.cpp
-  ${CATCH_SOURCES}
 )
 target_link_libraries(Compiler_UnitTests
+  PUBLIC
   $<TARGET_OBJECTS:Parser>
   $<TARGET_OBJECTS:Program>
+  PRIVATE Catch2::Catch2WithMain
 )
 add_covered_test(Compiler_UnitTests)
