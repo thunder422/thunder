@@ -23,4 +23,4 @@ target_link_libraries(Console_UnitTests
   $<TARGET_OBJECTS:Parser>
   $<TARGET_OBJECTS:Program>
 )
-add_covered_test(Console_UnitTests Console*)
+add_covered_test(Console_UnitTests)

@@ -22,4 +22,4 @@ target_link_libraries(Compiler_UnitTests
   $<TARGET_OBJECTS:Parser>
   $<TARGET_OBJECTS:Program>
 )
-add_covered_test(Compiler_UnitTests Compiler*)
+add_covered_test(Compiler_UnitTests)

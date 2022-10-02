@@ -44,16 +44,36 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(WARNING "Coverage disabled: lcov not found")
   endif()
 endif()
-include(AddCoveredTest)
+include(CoverageTesting)
+
+if(THUNDER_COVERAGE)
+  add_test(NAME ZeroCoverageData
+    COMMAND ${LCOV_PROGRAM} -q --directory . --zerocounters
+    WORKING_DIRECTORY ${REAL_BINARY_DIR}
+  )
+  set_tests_properties(ZeroCoverageData PROPERTIES FIXTURES_SETUP CoverageFixture)
+endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_subdirectory(Catch)
 
-add_subdirectory(Parser)
-add_subdirectory(Program)
-add_subdirectory(Compiler)
-add_subdirectory(Console)
+add_covered_subdirectory(Parser)
+add_covered_subdirectory(Program)
+add_covered_subdirectory(Compiler)
+add_covered_subdirectory(Console)
+
+if(THUNDER_COVERAGE)
+  add_test(NAME CoverageTest
+    COMMAND "${CMAKE_COMMAND}"
+      -D "REAL_SOURCE_DIR=${CMAKE_SOURCE_DIR}"
+      -D "REAL_BINARY_DIR=${CMAKE_BINARY_DIR}"
+      -D "TEST_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}"
+      -D "TEST_DIRS=${coverage_dir_list}"
+      -P "${CMAKE_SOURCE_DIR}/Cmake/TestCoverage.cmake"
+  )
+  set_tests_properties(CoverageTest PROPERTIES FIXTURES_CLEANUP CoverageFixture)
+endif()
 
 add_executable(thunder main.cpp)
 target_link_libraries(thunder

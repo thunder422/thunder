@@ -35,6 +35,15 @@ TEST_CASE("compile a command", "[compile]")
 
         REQUIRE(code.recreateLine(0) == "print 123");
     }
+    SECTION("compile an end statement to complete coverage")
+    {
+        std::istringstream iss {"end"};
+        Compiler compiler {code, iss};
+
+        compiler.compileLine();
+
+        REQUIRE(code.recreateLine(0) == "end");
+    }
 }
 
 TEST_CASE("compile an invalid command", "[invalid]")
