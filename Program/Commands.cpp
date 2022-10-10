@@ -18,10 +18,10 @@ struct CommandOpCode {
 
 Commands::Commands(std::initializer_list<CommandOpCode> initializers)
 {
-    for (auto &[opcode, keyword, function] : initializers) {
+    for (auto &[opcode, keyword, compile_function] : initializers) {
         codes[keyword] = opcode;
         keywords[opcode.getValue()] = keyword;
-        compile_functions[opcode.getValue()] = function;
+        compile_functions[opcode.getValue()] = compile_function;
     }
 }
 

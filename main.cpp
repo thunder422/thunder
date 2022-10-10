@@ -12,5 +12,5 @@
 int main()
 {
     Console console(std::cin, std::cout);
-    console.run();
+    console.commandLoop();
 }

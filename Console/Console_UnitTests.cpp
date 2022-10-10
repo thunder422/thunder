@@ -20,7 +20,7 @@ TEST_CASE("console", "[console]")
     {
         iss.str("q\n");
 
-        console.run();
+        console.commandLoop();
 
         auto expected_output {
             "Ready\n"
@@ -32,11 +32,27 @@ TEST_CASE("console", "[console]")
     {
         iss.str("l\nq\n");
 
-        console.run();
+        console.commandLoop();
 
         auto expected_output {
             "Ready\n"
             ":1 end\n"
+            ":Good-bye.\n"
+        };
+        REQUIRE(oss.str() == expected_output);
+    }
+    SECTION("insert a print command, list it, and exit")
+    {
+        iss.str("i\nprint 123\n\nl\nq\n");
+
+        console.commandLoop();
+
+        auto expected_output {
+            "Ready\n"
+            ":1 "
+            "2 "
+            ":1 print 123\n"
+            "2 end\n"
             ":Good-bye.\n"
         };
         REQUIRE(oss.str() == expected_output);

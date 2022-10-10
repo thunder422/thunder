@@ -14,10 +14,16 @@
 class Console {
 public:
     Console(std::istream &is, std::ostream &os);
-    void run();
+    void commandLoop();
 
 private:
+    void insert();
+    void list();
+    void quit();
+
     std::istream &is;
     std::ostream &os;
     ProgramUnit program;
+
+    bool is_running;
 };

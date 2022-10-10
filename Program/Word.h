@@ -20,7 +20,7 @@ public:
     operator WordType() const;
 
 private:
-    const WordType word;
+    WordType word;
 };
 
 

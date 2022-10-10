@@ -11,13 +11,23 @@
 #include "Code.h"
 
 
+class ProgramLine {
+public:
+    ProgramLine(std::size_t offset) : offset {offset} { }
+
+    std::size_t offset;
+};
+
+
 class ProgramUnit {
 public:
     ProgramUnit();
-    std::string recreateLine(std::size_t line);
+    void insertLine(std::size_t line_number, const std::string &line);
+    std::string recreateLine(std::size_t line_number);
 
 private:
-    std::size_t getOffset(std::size_t line);
+    std::size_t getOffset(std::size_t line_number);
 
     ProgramCode code;
+    std::vector<ProgramLine> lines;
 };

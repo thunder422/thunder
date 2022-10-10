@@ -15,10 +15,10 @@ Console::Console(std::istream &is, std::ostream &os) :
 {
 }
 
-void Console::run()
+void Console::commandLoop()
 {
     bool issue_ready_prompt = true;
-    for (bool is_running {true}; is_running; ) {
+    for (is_running = true; is_running; ) {
         if (issue_ready_prompt) {
             os << "Ready" << std::endl;
             issue_ready_prompt = false;
@@ -26,13 +26,50 @@ void Console::run()
         std::string command;
         os << ":" << std::flush;
         std::getline(is, command);
-        if (command == "l") {
-            auto line = program.recreateLine(0);
-            os << line << std::endl;
-        }
-        if (command == "q") {
-            is_running = false;
+        switch (command.front()) {
+        case 'i':
+            insert();
+            break;
+        case 'l':
+            list();
+            break;
+        case 'q':
+            quit();
+            break;
         }
     }
     os << "Good-bye." << std::endl;
+}
+
+void Console::insert()
+{
+    std::size_t line_number = 0;
+    for (;;) {
+        os << line_number + 1 << ' ' << std::flush;
+        std::string line;
+        std::getline(is, line);
+        if (line.empty()) {
+            break;
+        }
+        program.insertLine(line_number, line);
+        ++line_number;
+    }
+}
+
+void Console::list()
+{
+    size_t line_number = 0;
+    for (;;) {
+        auto line = program.recreateLine(line_number);
+        if (line.empty()) {
+            break;
+        }
+        os << line_number + 1 << ' ' << line << std::endl;
+        ++line_number;
+    }
+}
+
+void Console::quit()
+{
+    is_running = false;
 }

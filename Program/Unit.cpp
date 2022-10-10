@@ -5,6 +5,7 @@
  * (See accompanying file LICENSE or <http://www.gnu.org/licenses/>)
  */
 
+#include <sstream>
 #include "Unit.h"
 
 
@@ -13,18 +14,35 @@ extern OpCode end_opcode;
 ProgramUnit::ProgramUnit()
 {
     code.addOpCode(end_opcode);
+    lines.emplace_back(0);
 }
 
-std::string ProgramUnit::recreateLine(std::size_t line)
+void ProgramUnit::insertLine(std::size_t line_number, const std::string &line)
 {
-    auto offset = getOffset(line);
-    return std::to_string(line + 1) + " " + code.recreateLine(offset);
+    ProgramCode line_code;
+    std::istringstream iss {line};
+    line_code.compileLine(iss);
+
+    auto offset = getOffset(line_number);
+    auto size = code.insertLine(offset, line_code);
+
+    lines.emplace_back(0);
+    for (auto i = line_number; i < lines.size(); ++i) {
+        lines[i + 1] = lines[i].offset + size;
+    }
+    lines[line_number] = offset;
 }
 
-std::size_t ProgramUnit::getOffset(std::size_t line)
+std::string ProgramUnit::recreateLine(std::size_t line_number)
 {
-    (void)line;
-    return 0;
+    if (line_number >= lines.size()) {
+        return "";
+    }
+    auto offset = getOffset(line_number);
+    return code.recreateLine(offset);
 }
 
-
+std::size_t ProgramUnit::getOffset(std::size_t line_number)
+{
+    return lines[line_number].offset;
+}

@@ -14,6 +14,7 @@
 
 
 using ProgramWords = std::vector<ProgramWord>;
+using ProgramIterator = ProgramWords::iterator;
 
 
 class ProgramCode {
@@ -21,8 +22,11 @@ public:
     ProgramCode() = default;
 
     void compileLine(std::istream &is);
+    std::size_t insertLine(std::size_t offset, ProgramCode &line);
     std::string recreateLine(std::size_t line_offset);
 
+    auto begin();
+    auto end();
     void addOpCode(const OpCode &opcode);
     WordType addConstNum(double number);
     void addOperand(WordType operand);
@@ -33,3 +37,13 @@ private:
     ProgramWords words;
     std::vector<double> const_nums;
 };
+
+inline auto ProgramCode::begin()
+{
+    return words.begin();
+}
+
+inline auto ProgramCode::end()
+{
+    return words.end();
+}
