@@ -30,7 +30,11 @@ TEST_CASE("console", "[console]")
     }
     SECTION("list the default program containing the automatic end statement and exit")
     {
-        iss.str("l\nq\n");
+        auto input {
+            "l\n"
+            "q\n"
+        };
+        iss.str(input);
 
         console.commandLoop();
 
@@ -43,7 +47,14 @@ TEST_CASE("console", "[console]")
     }
     SECTION("insert a print command, list it, and exit")
     {
-        iss.str("i\nprint 123\n\nl\nq\n");
+        auto input {
+            "i\n"
+            "print 123\n"
+            "\n"
+            "l\n"
+            "q\n"
+        };
+        iss.str(input);
 
         console.commandLoop();
 
@@ -53,6 +64,33 @@ TEST_CASE("console", "[console]")
             "2 "
             ":1 print 123\n"
             "2 end\n"
+            ":Good-bye.\n"
+        };
+        REQUIRE(oss.str() == expected_output);
+    }
+    SECTION("insert print commands, run them, and exit")
+    {
+        auto input {
+            "i\n"
+            "print 1.23\n"
+            "print 4.56\n"
+            "\n"
+            "r\n"
+            "q\n"
+        };
+        iss.str(input);
+
+        console.commandLoop();
+
+        auto expected_output {
+            "Ready\n"
+            ":1 "
+            "2 "
+            "3 "
+            ":1.23\n"
+            "4.56\n"
+            "End Program.\n"
+            "Ready\n"
             ":Good-bye.\n"
         };
         REQUIRE(oss.str() == expected_output);

@@ -17,7 +17,6 @@ Console::Console(std::istream &is, std::ostream &os) :
 
 void Console::commandLoop()
 {
-    bool issue_ready_prompt = true;
     for (is_running = true; is_running; ) {
         if (issue_ready_prompt) {
             os << "Ready" << std::endl;
@@ -32,6 +31,9 @@ void Console::commandLoop()
             break;
         case 'l':
             list();
+            break;
+        case 'r':
+            run();
             break;
         case 'q':
             quit();
@@ -67,6 +69,12 @@ void Console::list()
         os << line_number + 1 << ' ' << line << std::endl;
         ++line_number;
     }
+}
+
+void Console::run()
+{
+    program.run(os);
+    issue_ready_prompt = true;
 }
 
 void Console::quit()

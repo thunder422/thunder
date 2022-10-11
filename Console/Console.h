@@ -19,6 +19,7 @@ public:
 private:
     void insert();
     void list();
+    void run();
     void quit();
 
     std::istream &is;
@@ -26,4 +27,5 @@ private:
     ProgramUnit program;
 
     bool is_running;
+    bool issue_ready_prompt {true};
 };

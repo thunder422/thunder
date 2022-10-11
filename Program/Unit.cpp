@@ -6,6 +6,7 @@
  */
 
 #include <sstream>
+#include "Runner.h"
 #include "Unit.h"
 
 
@@ -40,6 +41,12 @@ std::string ProgramUnit::recreateLine(std::size_t line_number)
     }
     auto offset = getOffset(line_number);
     return code.recreateLine(offset);
+}
+
+void ProgramUnit::run(std::ostream &os)
+{
+    Runner runner {code, os};
+    runner.runProgram();
 }
 
 std::size_t ProgramUnit::getOffset(std::size_t line_number)

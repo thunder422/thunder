@@ -24,6 +24,7 @@ public:
     ProgramUnit();
     void insertLine(std::size_t line_number, const std::string &line);
     std::string recreateLine(std::size_t line_number);
+    void run(std::ostream &os);
 
 private:
     std::size_t getOffset(std::size_t line_number);
