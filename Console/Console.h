@@ -28,4 +28,5 @@ private:
 
     bool is_running;
     bool issue_ready_prompt {true};
+    size_t insert_line_number {0};
 };

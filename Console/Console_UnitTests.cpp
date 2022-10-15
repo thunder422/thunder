@@ -95,4 +95,36 @@ TEST_CASE("console", "[console]")
         };
         REQUIRE(oss.str() == expected_output);
     }
+    SECTION("insert by default continues at same line from last insert")
+    {
+        auto input {
+            "i\n"
+            "print 1.23\n"
+            "print 4.56\n"
+            "\n"
+            "i\n"
+            "print 7.89\n"
+            "\n"
+            "l\n"
+            "q\n"
+        };
+        iss.str(input);
+
+        console.commandLoop();
+
+        auto expected_output {
+            "Ready\n"
+            ":1 "
+            "2 "
+            "3 "
+            ":3 "
+            "4 "
+            ":1 print 1.23\n"
+            "2 print 4.56\n"
+            "3 print 7.89\n"
+            "4 end\n"
+            ":Good-bye.\n"
+        };
+        REQUIRE(oss.str() == expected_output);
+    }
 }

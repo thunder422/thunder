@@ -45,16 +45,15 @@ void Console::commandLoop()
 
 void Console::insert()
 {
-    std::size_t line_number = 0;
     for (;;) {
-        os << line_number + 1 << ' ' << std::flush;
+        os << insert_line_number + 1 << ' ' << std::flush;
         std::string line;
         std::getline(is, line);
         if (line.empty()) {
             break;
         }
-        program.insertLine(line_number, line);
-        ++line_number;
+        program.insertLine(insert_line_number, line);
+        ++insert_line_number;
     }
 }
 
