@@ -18,6 +18,11 @@ ProgramUnit::ProgramUnit()
     lines.emplace_back(0);
 }
 
+size_t ProgramUnit::getLastLineNumber() const
+{
+    return lines.size();
+}
+
 void ProgramUnit::insertLine(std::size_t line_number, const std::string &line)
 {
     ProgramCode line_code;

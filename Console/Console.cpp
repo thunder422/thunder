@@ -52,6 +52,17 @@ void Console::insert(std::istream &command_is)
     if (command_is.peek() != std::char_traits<char>::eof()) {
         std::size_t number;
         command_is >> number;
+        auto last_line_number = program.getLastLineNumber();
+        if (number < 1 || number > last_line_number) {
+            os << "ERROR: invalid line number '" << number << "' (valid line";
+            if (last_line_number == 1) {
+                os << " 1";
+            } else {
+                os << "s 1-" << last_line_number;
+            }
+            os << ")!" << std::endl;
+            return;
+        }
         insert_line_number = number - 1;
     }
     for (;;) {

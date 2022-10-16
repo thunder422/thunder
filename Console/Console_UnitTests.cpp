@@ -158,4 +158,45 @@ TEST_CASE("console", "[console]")
         };
         REQUIRE(oss.str() == expected_output);
     }
+    SECTION("error if try to insert at a non-existing line number")
+    {
+        auto input {
+            "i\n"
+            "print 1.11\n"
+            "print 2.22\n"
+            "\n"
+            "i4\n"
+            "q\n"
+        };
+        iss.str(input);
+
+        console.commandLoop();
+
+        auto expected_output {
+            "Ready\n"
+            ":1 "
+            "2 "
+            "3 "
+            ":ERROR: invalid line number '4' (valid lines 1-3)!\n"
+            ":Good-bye.\n"
+        };
+        REQUIRE(oss.str() == expected_output);
+    }
+    SECTION("insert at line 0 is also invalid")
+    {
+        auto input {
+            "i0\n"
+            "q\n"
+        };
+        iss.str(input);
+
+        console.commandLoop();
+
+        auto expected_output {
+            "Ready\n"
+            ":ERROR: invalid line number '0' (valid line 1)!\n"
+            ":Good-bye.\n"
+        };
+        REQUIRE(oss.str() == expected_output);
+    }
 }
