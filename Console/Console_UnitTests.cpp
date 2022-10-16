@@ -127,4 +127,35 @@ TEST_CASE("console", "[console]")
         };
         REQUIRE(oss.str() == expected_output);
     }
+    SECTION("insert commands, insert at a line number, list them, and exit")
+    {
+        auto input {
+            "i\n"
+            "print 1.11\n"
+            "print 3.33\n"
+            "\n"
+            "i2\n"
+            "print 2.22\n"
+            "\n"
+            "l\n"
+            "q\n"
+        };
+        iss.str(input);
+
+        console.commandLoop();
+
+        auto expected_output {
+            "Ready\n"
+            ":1 "
+            "2 "
+            "3 "
+            ":2 "
+            "3 :1 print 1.11\n"
+            "2 print 2.22\n"
+            "3 print 3.33\n"
+            "4 end\n"
+            ":Good-bye.\n"
+        };
+        REQUIRE(oss.str() == expected_output);
+    }
 }

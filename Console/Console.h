@@ -17,7 +17,7 @@ public:
     void commandLoop();
 
 private:
-    void insert();
+    void insert(std::istream &command_is);
     void list();
     void run();
     void quit();

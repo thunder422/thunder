@@ -6,6 +6,7 @@
  */
 
 #include <iostream>
+#include <sstream>
 #include "Console.h"
 
 
@@ -22,12 +23,15 @@ void Console::commandLoop()
             os << "Ready" << std::endl;
             issue_ready_prompt = false;
         }
-        std::string command;
+        std::string input;
         os << ":" << std::flush;
-        std::getline(is, command);
-        switch (command.front()) {
+        std::getline(is, input);
+        std::istringstream iss {input};
+        char command;
+        iss >> command;
+        switch (command) {
         case 'i':
-            insert();
+            insert(iss);
             break;
         case 'l':
             list();
@@ -43,8 +47,13 @@ void Console::commandLoop()
     os << "Good-bye." << std::endl;
 }
 
-void Console::insert()
+void Console::insert(std::istream &command_is)
 {
+    if (command_is.peek() != std::char_traits<char>::eof()) {
+        std::size_t number;
+        command_is >> number;
+        insert_line_number = number - 1;
+    }
     for (;;) {
         os << insert_line_number + 1 << ' ' << std::flush;
         std::string line;
