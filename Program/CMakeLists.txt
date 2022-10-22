@@ -7,6 +7,7 @@
 set(PROGRAM_HEADERS
   Code.h
   Commands.h
+  Lines.h
   OpCode.h
   OpCodes.h
   Recreator.h
@@ -16,6 +17,7 @@ set(PROGRAM_HEADERS
 set(PROGRAM_SOURCES
   Code.cpp
   Commands.cpp
+  Lines.cpp
   OpCode.cpp
   OpCodes.cpp
   Recreator.cpp

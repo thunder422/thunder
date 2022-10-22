@@ -9,14 +9,7 @@
 
 #include <string>
 #include "Code.h"
-
-
-class ProgramLine {
-public:
-    ProgramLine(std::size_t offset) : offset {offset} { }
-
-    std::size_t offset;
-};
+#include "Lines.h"
 
 
 class ProgramUnit {
@@ -28,8 +21,8 @@ public:
     void run(std::ostream &os);
 
 private:
-    std::size_t getOffset(std::size_t line_number);
+    ProgramLines::View getLineView(std::size_t line_number);
 
     ProgramCode code;
-    std::vector<ProgramLine> lines;
+    ProgramLines lines;
 };

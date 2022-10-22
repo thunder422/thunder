@@ -15,7 +15,7 @@ extern OpCode end_opcode;
 ProgramUnit::ProgramUnit()
 {
     code.addOpCode(end_opcode);
-    lines.emplace_back(0);
+    lines.insert(0, 1);
 }
 
 size_t ProgramUnit::getLastLineNumber() const
@@ -29,14 +29,9 @@ void ProgramUnit::insertLine(std::size_t line_number, const std::string &line)
     std::istringstream iss {line};
     line_code.compileLine(iss);
 
-    auto offset = getOffset(line_number);
-    auto size = code.insertLine(offset, line_code);
-
-    lines.emplace_back(0);
-    for (auto i = line_number; i < lines.size(); ++i) {
-        lines[i + 1] = lines[i].offset + size;
-    }
-    lines[line_number] = offset;
+    auto line_view = getLineView(line_number);
+    auto line_size = code.insertLine(line_view.offset, line_code);
+    lines.insert(line_number, line_size);
 }
 
 std::string ProgramUnit::recreateLine(std::size_t line_number)
@@ -44,8 +39,8 @@ std::string ProgramUnit::recreateLine(std::size_t line_number)
     if (line_number >= lines.size()) {
         return "";
     }
-    auto offset = getOffset(line_number);
-    return code.recreateLine(offset);
+    auto line_view = getLineView(line_number);
+    return code.recreateLine(line_view.offset);
 }
 
 void ProgramUnit::run(std::ostream &os)
@@ -54,7 +49,7 @@ void ProgramUnit::run(std::ostream &os)
     runner.runProgram();
 }
 
-std::size_t ProgramUnit::getOffset(std::size_t line_number)
+ProgramLines::View ProgramUnit::getLineView(std::size_t line_number)
 {
-    return lines[line_number].offset;
+    return lines.getView(line_number);
 }
