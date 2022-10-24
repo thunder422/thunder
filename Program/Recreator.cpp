@@ -10,6 +10,7 @@
 #include "Commands.h"
 #include "OpCodes.h"
 #include "Recreator.h"
+#include "View.h"
 
 
 void recreateCommand(Recreator &recreator)
@@ -39,7 +40,6 @@ void Recreator::addCommandKeyword()
         string.append(1, ' ').append(line);
     }
     line.swap(string);
-    is_done = true;
 }
 
 std::size_t Recreator::getOperand()
@@ -57,10 +57,11 @@ void Recreator::pushString(std::string string)
     line.append(string);
 }
 
-std::string &&Recreator::recreateLine(std::size_t line_offset)
+std::string &&Recreator::recreateLine(const ProgramView &line_view)
 {
-    offset = line_offset;
-    while (!is_done) {
+    offset = line_view.offset;
+    auto end_offset = offset + line_view.size;
+    while (offset < end_offset) {
         auto opcode = code.getWord(offset);
         OpCodes::getRecreateFunction(opcode)(*this);
         ++offset;

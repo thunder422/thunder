@@ -11,6 +11,7 @@
 
 
 class ProgramCode;
+class ProgramView;
 
 class Recreator {
 public:
@@ -19,11 +20,10 @@ public:
     std::size_t getOperand();
     double getConstNum(std::size_t index);
     void pushString(std::string string);
-    std::string &&recreateLine(std::size_t line_offset);
+    std::string &&recreateLine(const ProgramView &line_view);
 
 private:
     ProgramCode &code;
     std::size_t offset;
     std::string line;
-    bool is_done {false};
 };

@@ -114,10 +114,10 @@ std::size_t ProgramCode::insertLine(std::size_t offset, ProgramCode &line)
     return line.words.size();
 }
 
-std::string ProgramCode::recreateLine(std::size_t line_offset)
+std::string ProgramCode::recreateLine(const ProgramView &line_view)
 {
     Recreator recreator {*this};
-    return recreator.recreateLine(line_offset);
+    return recreator.recreateLine(line_view);
 }
 
 void ProgramCode::addOpCode(const OpCode &opcode)

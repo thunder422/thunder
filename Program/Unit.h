@@ -21,7 +21,7 @@ public:
     void run(std::ostream &os);
 
 private:
-    ProgramLines::View getLineView(std::size_t line_number);
+    ProgramView getLineView(std::size_t line_number);
 
     ProgramCode code;
     ProgramLines lines;

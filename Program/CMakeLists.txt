@@ -13,6 +13,7 @@ set(PROGRAM_HEADERS
   Recreator.h
   Runner.h
   Unit.h
+  View.h
 )
 set(PROGRAM_SOURCES
   Code.cpp

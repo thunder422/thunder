@@ -8,6 +8,7 @@
 #include <sstream>
 #include "Runner.h"
 #include "Unit.h"
+#include "View.h"
 
 
 extern OpCode end_opcode;
@@ -40,7 +41,7 @@ std::string ProgramUnit::recreateLine(std::size_t line_number)
         return "";
     }
     auto line_view = getLineView(line_number);
-    return code.recreateLine(line_view.offset);
+    return code.recreateLine(line_view);
 }
 
 void ProgramUnit::run(std::ostream &os)
@@ -49,7 +50,7 @@ void ProgramUnit::run(std::ostream &os)
     runner.runProgram();
 }
 
-ProgramLines::View ProgramUnit::getLineView(std::size_t line_number)
+ProgramView ProgramUnit::getLineView(std::size_t line_number)
 {
     return lines.getView(line_number);
 }

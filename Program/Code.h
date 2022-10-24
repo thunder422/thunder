@@ -13,6 +13,7 @@
 #include "Word.h"
 
 
+struct ProgramView;
 using ProgramWords = std::vector<ProgramWord>;
 using ProgramIterator = ProgramWords::iterator;
 
@@ -23,7 +24,7 @@ public:
 
     void compileLine(std::istream &is);
     std::size_t insertLine(std::size_t offset, ProgramCode &line);
-    std::string recreateLine(std::size_t line_offset);
+    std::string recreateLine(const ProgramView &line_view);
 
     auto begin();
     auto end();

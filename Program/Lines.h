@@ -10,17 +10,14 @@
 #include <vector>
 
 
+struct ProgramView;
+
 class ProgramLines {
 public:
-    struct View {
-        std::size_t offset;
-        std::size_t size;
-    };
-
     ProgramLines();
     void insert(std::size_t line_number, std::size_t line_size);
     std::size_t size() const;
-    View getView(std::size_t line_number) const;
+    ProgramView getView(std::size_t line_number) const;
 
 private:
     std::vector<std::size_t> offset;

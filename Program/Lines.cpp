@@ -6,6 +6,7 @@
  */
 
 #include "Lines.h"
+#include "View.h"
 
 
 ProgramLines::ProgramLines()
@@ -29,7 +30,7 @@ std::size_t ProgramLines::size() const
     return offset.size() - 1;
 }
 
-ProgramLines::View ProgramLines::getView(std::size_t line_number) const
+ProgramView ProgramLines::getView(std::size_t line_number) const
 {
     auto line_offset = offset[line_number];
     auto next_offset = offset[line_number + 1];

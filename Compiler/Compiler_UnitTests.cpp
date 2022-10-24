@@ -11,6 +11,7 @@
 #include <Parser/Error.h>
 #include <Program/Code.h>
 #include <Program/Recreator.h>
+#include "Program/View.h"
 #include "Compiler.h"
 
 
@@ -25,7 +26,8 @@ TEST_CASE("compile a command", "[compile]")
 
         compiler.compileLine();
 
-        REQUIRE(code.recreateLine(0) == "print");
+        ProgramView line_view {0, 1};
+        REQUIRE(code.recreateLine(line_view) == "print");
     }
     SECTION("compile a command with a single constant")
     {
@@ -34,7 +36,8 @@ TEST_CASE("compile a command", "[compile]")
 
         compiler.compileLine();
 
-        REQUIRE(code.recreateLine(0) == "print 123");
+        ProgramView line_view {0, 4};
+        REQUIRE(code.recreateLine(line_view) == "print 123");
     }
     SECTION("compile an end statement to complete coverage")
     {
@@ -43,7 +46,8 @@ TEST_CASE("compile a command", "[compile]")
 
         compiler.compileLine();
 
-        REQUIRE(code.recreateLine(0) == "end");
+        ProgramView line_view {0, 1};
+        REQUIRE(code.recreateLine(line_view) == "end");
     }
 }
 
