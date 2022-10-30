@@ -8,6 +8,7 @@
 #pragma once
 
 #include <string>
+#include "WordType.h"
 
 
 class ProgramCode;
@@ -17,13 +18,17 @@ class Recreator {
 public:
     Recreator(ProgramCode &code);
     void addCommandKeyword();
+    std::size_t getOpcode();
     std::size_t getOperand();
     double getConstNum(std::size_t index);
     void pushString(std::string string);
+    const std::string &topString() const;
+    void swapTopString(std::string &string);
     std::string &&recreateLine(const ProgramView &line_view);
 
 private:
     ProgramCode &code;
     std::size_t offset;
+    WordType opcode;
     std::string line;
 };

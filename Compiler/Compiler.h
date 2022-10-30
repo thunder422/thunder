@@ -8,6 +8,7 @@
 #pragma once
 
 #include <iosfwd>
+#include <stack>
 #include <Parser/Parser.h>
 #include <Program/WordType.h>
 
@@ -23,6 +24,12 @@ public:
     void addOpCode(OpCode opcode);
 
 private:
+    bool compileUnaryExpression();
+    bool compileNumConst();
+    bool compileUnaryOperator();
+    void flushOpcodeStack();
+
     ProgramCode &code;
     Parser parser;
+    std::stack<OpCode> opcode_stack;
 };

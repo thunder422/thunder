@@ -21,6 +21,8 @@ public:
     double getConstNum(std::size_t index);
     void pushNumber(double number);
     double popNumber();
+    double getTopNumber() const;
+    void setTopNumber(double number);
     void output(std::string_view string);
     void endProgram();
 

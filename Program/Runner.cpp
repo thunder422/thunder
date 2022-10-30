@@ -38,6 +38,11 @@ void runConstNum(Runner &runner)
     runner.pushNumber(number);
 }
 
+void runNeg(Runner &runner)
+{
+    runner.setTopNumber(-runner.getTopNumber());
+}
+
 Runner::Runner(ProgramCode &code, std::ostream &os) :
     code {code},
     os {os}
@@ -65,6 +70,16 @@ double Runner::getConstNum(std::size_t index)
 }
 
 void Runner::pushNumber(double number)
+{
+    stack = number;
+}
+
+double Runner::getTopNumber() const
+{
+    return stack;
+}
+
+void Runner::setTopNumber(double number)
 {
     stack = number;
 }

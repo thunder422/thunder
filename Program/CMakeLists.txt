@@ -10,6 +10,7 @@ set(PROGRAM_HEADERS
   Lines.h
   OpCode.h
   OpCodes.h
+  Operators.h
   Recreator.h
   Runner.h
   Unit.h
@@ -21,11 +22,24 @@ set(PROGRAM_SOURCES
   Lines.cpp
   OpCode.cpp
   OpCodes.cpp
+  Operators.cpp
   Recreator.cpp
   Runner.cpp
   Unit.cpp
 )
 add_library(Program OBJECT ${PROGRAM_HEADERS} ${PROGRAM_SOURCES})
+
+add_executable(Expression_UnitTests
+  Expression_UnitTests.cpp
+)
+target_link_libraries(Expression_UnitTests
+  PUBLIC
+  $<TARGET_OBJECTS:Compiler>
+  $<TARGET_OBJECTS:Parser>
+  $<TARGET_OBJECTS:Program>
+  PRIVATE Catch2::Catch2WithMain
+)
+add_covered_test(Expression_UnitTests)
 
 add_executable(Runner_UnitTests
   Runner_UnitTests.cpp

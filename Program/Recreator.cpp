@@ -9,6 +9,7 @@
 #include "Code.h"
 #include "Commands.h"
 #include "OpCodes.h"
+#include "Operators.h"
 #include "Recreator.h"
 #include "View.h"
 
@@ -28,6 +29,17 @@ void recreateConstNum(Recreator &recreator)
     recreator.pushString(std::string{string, end});
 }
 
+void recreateUnaryOperator(Recreator &recreator)
+{
+    std::string string {Operators::getUnaryChar(recreator.getOpcode())};
+    auto &top_string = recreator.topString();
+    if (isdigit(top_string.front())) {
+        string.append(1, ' ');
+    }
+    string.append(top_string);
+    recreator.swapTopString(string);
+}
+
 Recreator::Recreator(ProgramCode &code) :
     code {code}
 {
@@ -39,7 +51,12 @@ void Recreator::addCommandKeyword()
     if (!line.empty()) {
         string.append(1, ' ').append(line);
     }
-    line.swap(string);
+    swapTopString(string);
+}
+
+std::size_t Recreator::getOpcode()
+{
+    return opcode;
 }
 
 std::size_t Recreator::getOperand()
@@ -57,12 +74,22 @@ void Recreator::pushString(std::string string)
     line.append(string);
 }
 
+const std::string &Recreator::topString() const
+{
+    return line;
+}
+
+void Recreator::swapTopString(std::string &string)
+{
+    line.swap(string);
+}
+
 std::string &&Recreator::recreateLine(const ProgramView &line_view)
 {
     offset = line_view.offset;
     auto end_offset = offset + line_view.size;
     while (offset < end_offset) {
-        auto opcode = code.getWord(offset);
+        opcode = code.getWord(offset);
         OpCodes::getRecreateFunction(opcode)(*this);
         ++offset;
     }
