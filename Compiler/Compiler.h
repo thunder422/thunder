@@ -27,6 +27,7 @@ private:
     bool compileUnaryExpression();
     bool compileNumConst();
     bool compileUnaryOperator();
+    bool compileBinaryOperator();
     void flushOpcodeStack();
 
     ProgramCode &code;

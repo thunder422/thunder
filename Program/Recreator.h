@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <stack>
 #include <string>
 #include "WordType.h"
 
@@ -22,13 +23,14 @@ public:
     std::size_t getOperand();
     double getConstNum(std::size_t index);
     void pushString(std::string string);
-    const std::string &topString() const;
+    std::string &topString();
     void swapTopString(std::string &string);
-    std::string &&recreateLine(const ProgramView &line_view);
+    std::string popString();
+    std::string recreateLine(const ProgramView &line_view);
 
 private:
     ProgramCode &code;
     std::size_t offset;
     WordType opcode;
-    std::string line;
+    std::stack<std::string> string_stack;
 };

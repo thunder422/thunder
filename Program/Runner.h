@@ -8,6 +8,7 @@
 #pragma once
 
 #include <cstddef>
+#include <stack>
 #include <string_view>
 
 
@@ -29,7 +30,7 @@ public:
 private:
     ProgramCode &code;
     std::size_t pc;
-    double stack;
+    std::stack<double> stack;
     std::ostream &os;
     bool is_done {false};
 };

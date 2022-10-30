@@ -39,6 +39,9 @@ bool Compiler::compileExpression()
 {
     parser.skipWhiteSpace();
     if (compileUnaryExpression()) {
+        if (compileBinaryOperator()) {
+            compileUnaryExpression();
+        }
         flushOpcodeStack();
         return true;
     }
@@ -76,6 +79,17 @@ bool Compiler::compileNumConst()
 bool Compiler::compileUnaryOperator()
 {
     auto opcode = Operators::getUnaryOpcode(parser.peekNextChar());
+    if (opcode) {
+        parser.getNextChar();
+        opcode_stack.emplace(*opcode);
+        return true;
+    }
+    return false;
+}
+
+bool Compiler::compileBinaryOperator()
+{
+    auto opcode = Operators::getBinaryOpcode(parser.peekNextChar());
     if (opcode) {
         parser.getNextChar();
         opcode_stack.emplace(*opcode);

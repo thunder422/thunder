@@ -27,6 +27,7 @@ OpCodes::OpCodes(std::initializer_list<AllOpCode> initializers) :
 
 OpCode const_num_opcode;
 extern OpCode neg_opcode;
+extern OpCode add_opcode;
 extern OpCode print_opcode;
 extern OpCode print_num_opcode;
 extern OpCode end_opcode;
@@ -36,10 +37,12 @@ void runPrintNum(Runner &runner);
 void runEnd(Runner &runner);
 void runConstNum(Runner &runner);
 void runNeg(Runner &runner);
+void runAdd(Runner &runner);
 
 void recreateCommand(Recreator &recreator);
 void recreateConstNum(Recreator &recreator);
 void recreateUnaryOperator(Recreator &recreator);
+void recreateBinaryOperator(Recreator &recreator);
 
 void recreateNothing(Recreator &)
 {
@@ -52,7 +55,8 @@ OpCodes &opcodes()
         {print_num_opcode, recreateNothing, runPrintNum},
         {end_opcode, recreateCommand, runEnd},
         {const_num_opcode, recreateConstNum, runConstNum},
-        {neg_opcode, recreateUnaryOperator, runNeg}
+        {neg_opcode, recreateUnaryOperator, runNeg},
+        {add_opcode, recreateBinaryOperator, runAdd}
     };
     return opcodes;
 }

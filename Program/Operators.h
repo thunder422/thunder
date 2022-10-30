@@ -14,6 +14,7 @@
 
 
 struct UnaryOpCode;
+struct BinaryOpCode;
 class Compiler;
 class OpCode;
 
@@ -21,10 +22,15 @@ class Operators {
 public:
     static std::optional<OpCode> getUnaryOpcode(char c);
     static std::string_view getUnaryChar(WordType opcode);
+    static std::optional<OpCode> getBinaryOpcode(char c);
+    static std::string_view getBinaryChar(WordType opcode);
 
-    Operators(std::initializer_list<UnaryOpCode> unary_initializers);
+    Operators(std::initializer_list<UnaryOpCode> unary_initializers,
+        std::initializer_list<UnaryOpCode> binary_initializers);
 
 private:
     std::map<char, OpCode> unary_codes;
     std::map<WordType, char> unary_chars;
+    std::map<char, OpCode> binary_codes;
+    std::map<WordType, char> binary_chars;
 };

@@ -103,3 +103,16 @@ TEST_CASE("compile, recreate and run unary negate operator", "[negate]")
         }
     }
 }
+
+TEST_CASE("compile, recreate and run binary add operator", "[add]")
+{
+    ExpressionTester expression;
+
+    SECTION("add operator")
+    {
+        expression.compile("12.34+56.78");
+
+        REQUIRE(expression.recreate() == "12.34 + 56.78");
+        REQUIRE(expression.run() == 69.12);
+    }
+}

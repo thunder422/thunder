@@ -40,6 +40,13 @@ void recreateUnaryOperator(Recreator &recreator)
     recreator.swapTopString(string);
 }
 
+void recreateBinaryOperator(Recreator &recreator)
+{
+    std::string rhs_string {recreator.popString()};
+    recreator.topString().append(1, ' ').append(Operators::getBinaryChar(recreator.getOpcode()))
+        .append(1, ' ').append(rhs_string);
+}
+
 Recreator::Recreator(ProgramCode &code) :
     code {code}
 {
@@ -48,10 +55,12 @@ Recreator::Recreator(ProgramCode &code) :
 void Recreator::addCommandKeyword()
 {
     std::string string {Commands::getKeyword(code.getWord(offset))};
-    if (!line.empty()) {
-        string.append(1, ' ').append(line);
+    if (string_stack.empty()) {
+        pushString(std::move(string));
+    } else {
+        string.append(1, ' ').append(string_stack.top());
+        swapTopString(string);
     }
-    swapTopString(string);
 }
 
 std::size_t Recreator::getOpcode()
@@ -71,20 +80,27 @@ double Recreator::getConstNum(std::size_t index)
 
 void Recreator::pushString(std::string string)
 {
-    line.append(string);
+    string_stack.emplace(std::move(string));
 }
 
-const std::string &Recreator::topString() const
+std::string &Recreator::topString()
 {
-    return line;
+    return string_stack.top();
 }
 
 void Recreator::swapTopString(std::string &string)
 {
-    line.swap(string);
+    string_stack.top().swap(string);
 }
 
-std::string &&Recreator::recreateLine(const ProgramView &line_view)
+std::string Recreator::popString()
+{
+    auto string = std::move(string_stack.top());
+    string_stack.pop();
+    return string;
+}
+
+std::string Recreator::recreateLine(const ProgramView &line_view)
 {
     offset = line_view.offset;
     auto end_offset = offset + line_view.size;
@@ -93,5 +109,5 @@ std::string &&Recreator::recreateLine(const ProgramView &line_view)
         OpCodes::getRecreateFunction(opcode)(*this);
         ++offset;
     }
-    return std::move(line);
+    return popString();
 }
