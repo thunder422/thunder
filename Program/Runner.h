@@ -21,9 +21,8 @@ public:
     std::size_t getOperand();
     double getConstNum(std::size_t index);
     void pushNumber(double number);
+    double &topNumber();
     double popNumber();
-    double getTopNumber() const;
-    void setTopNumber(double number);
     void output(std::string_view string);
     void endProgram();
 
@@ -35,3 +34,19 @@ private:
     bool is_done {false};
 };
 
+inline void Runner::pushNumber(double number)
+{
+    stack.emplace(number);
+}
+
+inline double &Runner::topNumber()
+{
+    return stack.top();
+}
+
+inline double Runner::popNumber()
+{
+    auto number = stack.top();
+    stack.pop();
+    return number;
+}

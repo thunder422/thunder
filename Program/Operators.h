@@ -17,6 +17,7 @@ struct UnaryOpCode;
 struct BinaryOpCode;
 class Compiler;
 class OpCode;
+enum class Precedence : int;
 
 class Operators {
 public:
@@ -24,6 +25,9 @@ public:
     static std::string_view getUnaryChar(WordType opcode);
     static std::optional<OpCode> getBinaryOpcode(char c);
     static std::string_view getBinaryChar(WordType opcode);
+    static Precedence getPrecedence(OpCode operator_opcode);
+    static Precedence bottom_precedence;
+    static Precedence lowest_precedence;
 
     Operators(std::initializer_list<UnaryOpCode> unary_initializers,
         std::initializer_list<UnaryOpCode> binary_initializers);
@@ -33,4 +37,5 @@ private:
     std::map<WordType, char> unary_chars;
     std::map<char, OpCode> binary_codes;
     std::map<WordType, char> binary_chars;
+    std::map<WordType, Precedence> precedences;
 };

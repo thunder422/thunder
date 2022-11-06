@@ -10,10 +10,11 @@
 #include <iosfwd>
 #include <stack>
 #include <Parser/Parser.h>
+#include <Program/OpCode.h>
 #include <Program/WordType.h>
 
 
-class OpCode;
+enum class Precedence : int;
 class ProgramCode;
 
 class Compiler {
@@ -28,9 +29,18 @@ private:
     bool compileNumConst();
     bool compileUnaryOperator();
     bool compileBinaryOperator();
-    void flushOpcodeStack();
+    void flushOperatorStack(Precedence higher_or_same);
+
+    class Operator {
+    public:
+        Operator(OpCode opcode, Precedence precedence) :
+            opcode {opcode}, precedence {precedence} { }
+
+        OpCode opcode;
+        Precedence precedence;
+    };
 
     ProgramCode &code;
     Parser parser;
-    std::stack<OpCode> opcode_stack;
+    std::stack<Operator> operator_stack;
 };

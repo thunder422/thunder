@@ -40,13 +40,13 @@ void runConstNum(Runner &runner)
 
 void runNeg(Runner &runner)
 {
-    runner.setTopNumber(-runner.getTopNumber());
+    runner.topNumber() = -runner.topNumber();
 }
 
 void runAdd(Runner &runner)
 {
     auto rhs = runner.popNumber();
-    runner.setTopNumber(runner.getTopNumber() + rhs);
+    runner.topNumber() += rhs;
 }
 
 Runner::Runner(ProgramCode &code, std::ostream &os) :
@@ -73,28 +73,6 @@ std::size_t Runner::getOperand()
 double Runner::getConstNum(std::size_t index)
 {
     return code.getConstNum(index);
-}
-
-void Runner::pushNumber(double number)
-{
-    stack.emplace(number);
-}
-
-double Runner::getTopNumber() const
-{
-    return stack.top();
-}
-
-void Runner::setTopNumber(double number)
-{
-    stack.top() = number;
-}
-
-double Runner::popNumber()
-{
-    auto number = stack.top();
-    stack.pop();
-    return number;
 }
 
 void Runner::output(std::string_view string)

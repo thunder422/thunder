@@ -10,26 +10,37 @@
 #include "Operators.h"
 
 
+enum class Precedence : int {
+    Bottom,
+    Lowest,
+    Add,
+    Neq
+};
+
 struct UnaryOpCode {
     OpCode opcode;
     char c;
+    Precedence precedence;
 };
 
 struct BinaryOpCode {
     OpCode opcode;
     char c;
+    Precedence precedence;
 };
 
 Operators::Operators(std::initializer_list<UnaryOpCode> unary_initializers,
     std::initializer_list<UnaryOpCode> binary_initializers)
 {
-    for (auto &[opcode, c] : unary_initializers) {
+    for (auto &[opcode, c, precedence] : unary_initializers) {
         unary_codes[c] = opcode;
         unary_chars[opcode.getValue()] = c;
+        precedences[opcode.getValue()] = precedence;
     }
-    for (auto &[opcode, c] : binary_initializers) {
+    for (auto &[opcode, c, precedence] : binary_initializers) {
         binary_codes[c] = opcode;
         binary_chars[opcode.getValue()] = c;
+        precedences[opcode.getValue()] = precedence;
     }
 }
 
@@ -40,10 +51,10 @@ Operators &operators()
 {
     static Operators operators {
         {
-            {neg_opcode, '-'}
+            {neg_opcode, '-', Precedence::Neq}
         },
         {
-            {add_opcode, '+'}
+            {add_opcode, '+', Precedence::Add}
         }
     };
     return operators;
@@ -76,3 +87,11 @@ std::string_view Operators::getBinaryChar(WordType opcode)
     auto &c = operators().binary_chars[opcode];
     return {&c, 1};
 }
+
+Precedence Operators::getPrecedence(OpCode operator_opcode)
+{
+    return operators().precedences[operator_opcode.getValue()];
+}
+
+Precedence Operators::bottom_precedence = Precedence::Bottom;
+Precedence Operators::lowest_precedence = Precedence::Lowest;

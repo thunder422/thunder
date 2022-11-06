@@ -16,6 +16,17 @@
 
 
 extern OpCode const_num_opcode;
+OpCode bottom_opcode;
+
+bool operator==(OpCode &lhs, OpCode &rhs)
+{
+    return lhs.getValue() == rhs.getValue();
+}
+
+bool operator!=(OpCode &lhs, OpCode &rhs)
+{
+    return !(lhs == rhs);
+}
 
 
 Compiler::Compiler(ProgramCode &code, std::istream &is) :
@@ -37,12 +48,13 @@ void Compiler::compileLine()
 
 bool Compiler::compileExpression()
 {
+    operator_stack.emplace(bottom_opcode, Operators::bottom_precedence);
     parser.skipWhiteSpace();
     if (compileUnaryExpression()) {
         if (compileBinaryOperator()) {
             compileUnaryExpression();
         }
-        flushOpcodeStack();
+        flushOperatorStack(Operators::lowest_precedence);
         return true;
     }
     return false;
@@ -55,7 +67,7 @@ bool Compiler::compileUnaryExpression()
             return true;
         } else if (compileUnaryOperator()) {
             parser.skipWhiteSpace();
-        } else if (!opcode_stack.empty()) {
+        } else if (operator_stack.top().opcode != bottom_opcode) {
             unsigned column = parser.getColumn();
             throw ParseError {"expected unary operator or operand", column};
         } else {
@@ -81,7 +93,7 @@ bool Compiler::compileUnaryOperator()
     auto opcode = Operators::getUnaryOpcode(parser.peekNextChar());
     if (opcode) {
         parser.getNextChar();
-        opcode_stack.emplace(*opcode);
+        operator_stack.emplace(*opcode, Operators::getPrecedence(*opcode));
         return true;
     }
     return false;
@@ -92,17 +104,19 @@ bool Compiler::compileBinaryOperator()
     auto opcode = Operators::getBinaryOpcode(parser.peekNextChar());
     if (opcode) {
         parser.getNextChar();
-        opcode_stack.emplace(*opcode);
+        auto operator_precendence = Operators::getPrecedence(*opcode);
+        flushOperatorStack(operator_precendence);
+        operator_stack.emplace(*opcode, operator_precendence);
         return true;
     }
     return false;
 }
 
-void Compiler::flushOpcodeStack()
+void Compiler::flushOperatorStack(Precedence higher_or_same)
 {
-    while (!opcode_stack.empty()) {
-        code.addOpCode(opcode_stack.top());
-        opcode_stack.pop();
+    while (operator_stack.top().precedence >= higher_or_same) {
+        code.addOpCode(operator_stack.top().opcode);
+        operator_stack.pop();
     }
 }
 

@@ -115,4 +115,11 @@ TEST_CASE("compile, recreate and run binary add operator", "[add]")
         REQUIRE(expression.recreate() == "12.34 + 56.78");
         REQUIRE(expression.run() == 69.12);
     }
+    SECTION("add operator with negate operator")
+    {
+        expression.compile("- 12.34+56.78");
+
+        REQUIRE(expression.recreate() == "- 12.34 + 56.78");
+        REQUIRE(expression.run() == 44.44);
+    }
 }
