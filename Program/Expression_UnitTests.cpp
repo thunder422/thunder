@@ -184,6 +184,32 @@ TEST_CASE("compile, recreate and run binary divide operator", "[div]")
     }
 }
 
+TEST_CASE("compile, recreate and run binary modulo operator", "[mod]")
+{
+    ExpressionTester expression;
+
+    SECTION("modulo operator")
+    {
+        expression.compile("12.34%5.678");
+
+        REQUIRE(expression.recreate() == "12.34 % 5.678");
+        REQUIRE(expression.run() == 0.984);
+    }
+}
+
+TEST_CASE("compile, recreate and run binary integer divide operator", "[idiv]")
+{
+    ExpressionTester expression;
+
+    SECTION("integer divide operator")
+    {
+        expression.compile(R"(12.34\5.678)");
+
+        REQUIRE(expression.recreate() == R"(12.34 \ 5.678)");
+        REQUIRE(expression.run() == 2);
+    }
+}
+
 TEST_CASE("compile, recreate and run binary power operator", "[pow]")
 {
     ExpressionTester expression;

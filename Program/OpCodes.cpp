@@ -31,6 +31,8 @@ extern OpCode add_opcode;
 extern OpCode sub_opcode;
 extern OpCode mul_opcode;
 extern OpCode div_opcode;
+extern OpCode mod_opcode;
+extern OpCode idiv_opcode;
 extern OpCode pow_opcode;
 extern OpCode print_opcode;
 extern OpCode print_num_opcode;
@@ -45,6 +47,8 @@ void runAdd(Runner &runner);
 void runSub(Runner &runner);
 void runMul(Runner &runner);
 void runDiv(Runner &runner);
+void runMod(Runner &runner);
+void runIdiv(Runner &runner);
 void runPow(Runner &runner);
 
 void recreateCommand(Recreator &recreator);
@@ -68,6 +72,8 @@ OpCodes &opcodes()
         {sub_opcode, recreateBinaryOperator, runSub},
         {mul_opcode, recreateBinaryOperator, runMul},
         {div_opcode, recreateBinaryOperator, runDiv},
+        {mod_opcode, recreateBinaryOperator, runMod},
+        {idiv_opcode, recreateBinaryOperator, runIdiv},
         {pow_opcode, recreateBinaryOperator, runPow}
     };
     return opcodes;

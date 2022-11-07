@@ -68,6 +68,18 @@ void runDiv(Runner &runner)
     runner.topNumber() /= rhs;
 }
 
+void runMod(Runner &runner)
+{
+    auto rhs = runner.popNumber();
+    runner.topNumber() = std::fmod(runner.topNumber(), rhs);
+}
+
+void runIdiv(Runner &runner)
+{
+    auto rhs = runner.popNumber();
+    runner.topNumber() = std::trunc(runner.topNumber() / rhs);
+}
+
 void runPow(Runner &runner)
 {
     auto rhs = runner.popNumber();

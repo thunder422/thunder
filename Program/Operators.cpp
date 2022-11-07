@@ -51,6 +51,8 @@ OpCode add_opcode;
 OpCode sub_opcode;
 OpCode mul_opcode;
 OpCode div_opcode;
+OpCode mod_opcode;
+OpCode idiv_opcode;
 OpCode pow_opcode;
 
 Operators &operators()
@@ -64,6 +66,8 @@ Operators &operators()
             {sub_opcode, '-', Precedence::Add},
             {mul_opcode, '*', Precedence::Mul},
             {div_opcode, '/', Precedence::Mul},
+            {mod_opcode, '%', Precedence::Mul},
+            {idiv_opcode, '\\', Precedence::Mul},
             {pow_opcode, '^', Precedence::Pow}
         }
     };
