@@ -6,6 +6,7 @@
  */
 
 #include <charconv>
+#include <cmath>
 #include <iostream>
 #include "Code.h"
 #include "OpCodes.h"
@@ -47,6 +48,30 @@ void runAdd(Runner &runner)
 {
     auto rhs = runner.popNumber();
     runner.topNumber() += rhs;
+}
+
+void runSub(Runner &runner)
+{
+    auto rhs = runner.popNumber();
+    runner.topNumber() -= rhs;
+}
+
+void runMul(Runner &runner)
+{
+    auto rhs = runner.popNumber();
+    runner.topNumber() *= rhs;
+}
+
+void runDiv(Runner &runner)
+{
+    auto rhs = runner.popNumber();
+    runner.topNumber() /= rhs;
+}
+
+void runPow(Runner &runner)
+{
+    auto rhs = runner.popNumber();
+    runner.topNumber() = std::pow(runner.topNumber(), rhs);
 }
 
 Runner::Runner(ProgramCode &code, std::ostream &os) :

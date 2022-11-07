@@ -123,3 +123,90 @@ TEST_CASE("compile, recreate and run binary add operator", "[add]")
         REQUIRE(expression.run() == 44.44);
     }
 }
+
+TEST_CASE("compile, recreate and run binary sub operator", "[sub]")
+{
+    ExpressionTester expression;
+
+    SECTION("subtract operator")
+    {
+        expression.compile("43.21-56.78");
+
+        REQUIRE(expression.recreate() == "43.21 - 56.78");
+        REQUIRE(expression.run() == -13.57);
+    }
+    SECTION("add and subtract associate left to right")
+    {
+        expression.compile("1-2+3");
+
+        REQUIRE(expression.recreate() == "1 - 2 + 3");
+        REQUIRE(expression.run() == 2);
+    }
+}
+
+TEST_CASE("compile, recreate and run binary multiple operator", "[mul]")
+{
+    ExpressionTester expression;
+
+    SECTION("multiply operator")
+    {
+        expression.compile("12.34*56.78");
+
+        REQUIRE(expression.recreate() == "12.34 * 56.78");
+        REQUIRE(expression.run() == 700.6652);
+    }
+    SECTION("multiply operator with add operator")
+    {
+        expression.compile("1.2+3.4*5.6");
+
+        REQUIRE(expression.recreate() == "1.2 + 3.4 * 5.6");
+        REQUIRE(expression.run() == 20.24);
+    }
+    SECTION("multiply operator with add operator with spaces")
+    {
+        expression.compile("1.2 * 3.4 + 5.6");
+
+        REQUIRE(expression.recreate() == "1.2 * 3.4 + 5.6");
+        REQUIRE(expression.run() == 9.68);
+    }
+}
+
+TEST_CASE("compile, recreate and run binary divide operator", "[div]")
+{
+    ExpressionTester expression;
+
+    SECTION("divide operator")
+    {
+        expression.compile("12.34/5.678");
+
+        REQUIRE(expression.recreate() == "12.34 / 5.678");
+        REQUIRE(expression.run() == 2.173300457907714);
+    }
+}
+
+TEST_CASE("compile, recreate and run binary power operator", "[pow]")
+{
+    ExpressionTester expression;
+
+    SECTION("power operator")
+    {
+        expression.compile("2 ^ 3");
+
+        REQUIRE(expression.recreate() == "2 ^ 3");
+        REQUIRE(expression.run() == 8);
+    }
+    SECTION("power operator is higher precedence than negate operator")
+    {
+        expression.compile("- 3 ^ 2");
+
+        REQUIRE(expression.recreate() == "- 3 ^ 2");
+        REQUIRE(expression.run() == -9);
+    }
+    SECTION("power operator associates left to right")
+    {
+        expression.compile("4 ^ 3 ^ 2");
+
+        REQUIRE(expression.recreate() == "4 ^ 3 ^ 2");
+        REQUIRE(expression.run() == 4096);
+    }
+}

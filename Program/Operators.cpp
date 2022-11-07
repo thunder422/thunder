@@ -14,7 +14,9 @@ enum class Precedence : int {
     Bottom,
     Lowest,
     Add,
-    Neq
+    Mul,
+    Neq,
+    Pow
 };
 
 struct UnaryOpCode {
@@ -46,6 +48,10 @@ Operators::Operators(std::initializer_list<UnaryOpCode> unary_initializers,
 
 OpCode neg_opcode;
 OpCode add_opcode;
+OpCode sub_opcode;
+OpCode mul_opcode;
+OpCode div_opcode;
+OpCode pow_opcode;
 
 Operators &operators()
 {
@@ -54,7 +60,11 @@ Operators &operators()
             {neg_opcode, '-', Precedence::Neq}
         },
         {
-            {add_opcode, '+', Precedence::Add}
+            {add_opcode, '+', Precedence::Add},
+            {sub_opcode, '-', Precedence::Add},
+            {mul_opcode, '*', Precedence::Mul},
+            {div_opcode, '/', Precedence::Mul},
+            {pow_opcode, '^', Precedence::Pow}
         }
     };
     return operators;

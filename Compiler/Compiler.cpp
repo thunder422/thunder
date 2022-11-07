@@ -49,9 +49,8 @@ void Compiler::compileLine()
 bool Compiler::compileExpression()
 {
     operator_stack.emplace(bottom_opcode, Operators::bottom_precedence);
-    parser.skipWhiteSpace();
     if (compileUnaryExpression()) {
-        if (compileBinaryOperator()) {
+        while (compileBinaryOperator()) {
             compileUnaryExpression();
         }
         flushOperatorStack(Operators::lowest_precedence);
@@ -78,6 +77,7 @@ bool Compiler::compileUnaryExpression()
 
 bool Compiler::compileNumConst()
 {
+    parser.skipWhiteSpace();
     auto number = parser.parseNumber();
     if (number) {
         code.addOpCode(const_num_opcode);
@@ -90,6 +90,7 @@ bool Compiler::compileNumConst()
 
 bool Compiler::compileUnaryOperator()
 {
+    parser.skipWhiteSpace();
     auto opcode = Operators::getUnaryOpcode(parser.peekNextChar());
     if (opcode) {
         parser.getNextChar();
@@ -101,6 +102,7 @@ bool Compiler::compileUnaryOperator()
 
 bool Compiler::compileBinaryOperator()
 {
+    parser.skipWhiteSpace();
     auto opcode = Operators::getBinaryOpcode(parser.peekNextChar());
     if (opcode) {
         parser.getNextChar();
