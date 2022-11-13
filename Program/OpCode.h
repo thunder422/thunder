@@ -8,6 +8,7 @@
 #pragma once
 
 #include <cstdint>
+#include "PrecendenceFwd.h"
 #include "WordType.h"
 
 
@@ -28,3 +29,14 @@ inline WordType OpCode::getValue() const
 {
     return value;
 }
+
+
+class Operator {
+public:
+    Operator() = default;
+    Operator(OpCode opcode, Precedence precedence) :
+        opcode {opcode}, precedence {precedence} { }
+
+    OpCode opcode;
+    Precedence precedence;
+};

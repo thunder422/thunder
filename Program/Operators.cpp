@@ -8,44 +8,36 @@
 #include <Compiler/Compiler.h>
 #include "OpCode.h"
 #include "Operators.h"
+#include "OtherOperator.h"
+#include "Precedence.h"
 
 
-enum class Precedence : int {
-    Bottom,
-    Lowest,
-    Add,
-    Mul,
-    Neq,
-    Pow
-};
-
-struct UnaryOpCode {
-    OpCode opcode;
+struct UnaryOperator {
     char c;
-    Precedence precedence;
+    Operator operator_;
 };
 
-struct BinaryOpCode {
-    OpCode opcode;
+struct BinaryOperator {
     char c;
-    Precedence precedence;
+    Operator operator_;
 };
 
-Operators::Operators(std::initializer_list<UnaryOpCode> unary_initializers,
-    std::initializer_list<UnaryOpCode> binary_initializers)
+Operators::Operators(std::initializer_list<UnaryOperator> unary_initializers,
+    std::initializer_list<UnaryOperator> binary_initializers)
 {
-    for (auto &[opcode, c, precedence] : unary_initializers) {
-        unary_codes[c] = opcode;
-        unary_chars[opcode.getValue()] = c;
-        precedences[opcode.getValue()] = precedence;
+    for (auto &[c, operator_] : unary_initializers) {
+        unary_codes[c] = operator_;
+        unary_chars[operator_.opcode.getValue()] = c;
+        precedences[operator_.opcode.getValue()] = operator_.precedence;
     }
-    for (auto &[opcode, c, precedence] : binary_initializers) {
-        binary_codes[c] = opcode;
-        binary_chars[opcode.getValue()] = c;
-        precedences[opcode.getValue()] = precedence;
+    for (auto &[c, operator_] : binary_initializers) {
+        binary_codes[c] = operator_;
+        binary_chars[operator_.opcode.getValue()] = c;
+        precedences[operator_.opcode.getValue()] = operator_.precedence;
     }
 }
 
+extern OpCode null_opcode;
 OpCode neg_opcode;
 OpCode add_opcode;
 OpCode sub_opcode;
@@ -59,22 +51,24 @@ Operators &operators()
 {
     static Operators operators {
         {
-            {neg_opcode, '-', Precedence::Neq}
+            {'-', {neg_opcode, Precedence::Neq}},
+            {'(', {null_opcode, Precedence::OpenParen}}
         },
         {
-            {add_opcode, '+', Precedence::Add},
-            {sub_opcode, '-', Precedence::Add},
-            {mul_opcode, '*', Precedence::Mul},
-            {div_opcode, '/', Precedence::Mul},
-            {mod_opcode, '%', Precedence::Mul},
-            {idiv_opcode, '\\', Precedence::Mul},
-            {pow_opcode, '^', Precedence::Pow}
+            {'+', {add_opcode, Precedence::Add}},
+            {'-', {sub_opcode, Precedence::Add}},
+            {'*', {mul_opcode, Precedence::Mul}},
+            {'/', {div_opcode, Precedence::Mul}},
+            {'%', {mod_opcode, Precedence::Mul}},
+            {'\\', {idiv_opcode, Precedence::Mul}},
+            {'^', {pow_opcode, Precedence::Pow}},
+            {')', {null_opcode, Precedence::CloseParen}}
         }
     };
     return operators;
 }
 
-std::optional<OpCode> Operators::getUnaryOpcode(char c)
+std::optional<Operator> Operators::getUnaryOpcode(char c)
 {
     if (auto it = operators().unary_codes.find(c); it != operators().unary_codes.end()) {
         return it->second;
@@ -88,12 +82,27 @@ std::string_view Operators::getUnaryChar(WordType opcode)
     return {&c, 1};
 }
 
-std::optional<OpCode> Operators::getBinaryOpcode(char c)
+bool isOperatorAllowed(Operator &operator_, OtherOperator other);
+
+std::optional<Operator> Operators::getBinaryOpcode(char c, OtherOperator other)
 {
     if (auto it = operators().binary_codes.find(c); it != operators().binary_codes.end()) {
-        return it->second;
+        if (isOperatorAllowed(it->second, other)) {
+            return it->second;
+        }
     }
     return {};
+}
+
+bool isOperatorAllowed(Operator &operator_, OtherOperator other)
+{
+    if (operator_.precedence == Precedence::CloseParen) {
+        if (other == OtherOperator::CloseParen) {
+            return true;
+        }
+        return false;
+    }
+    return true;
 }
 
 std::string_view Operators::getBinaryChar(WordType opcode)
@@ -102,10 +111,7 @@ std::string_view Operators::getBinaryChar(WordType opcode)
     return {&c, 1};
 }
 
-Precedence Operators::getPrecedence(OpCode operator_opcode)
+Precedence Operators::getPrecedence(WordType opcode)
 {
-    return operators().precedences[operator_opcode.getValue()];
+    return operators().precedences[opcode];
 }
-
-Precedence Operators::bottom_precedence = Precedence::Bottom;
-Precedence Operators::lowest_precedence = Precedence::Lowest;

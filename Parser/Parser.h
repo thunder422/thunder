@@ -26,6 +26,7 @@ public:
 
 private:
     std::istream &is;
+    std::streampos column {0};
 };
 
 
@@ -36,11 +37,12 @@ inline Parser::Parser(std::istream &is) :
 
 inline std::streampos Parser::getColumn()
 {
-    return is.tellg();
+    return column;
 }
 
 inline char Parser::peekNextChar()
 {
+    column = is.tellg();
     return is.peek();
 }
 

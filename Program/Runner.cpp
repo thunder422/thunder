@@ -20,7 +20,7 @@ void runPrint(Runner &runner)
 
 void runPrintNum(Runner &runner)
 {
-    char string[20];
+    char string[24];
     auto number = runner.popNumber();
     auto [end, error_code] = std::to_chars(string, string + sizeof(string), number);
     runner.output(std::string{string, end});

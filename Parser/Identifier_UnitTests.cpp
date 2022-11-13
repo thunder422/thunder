@@ -49,3 +49,17 @@ TEST_CASE("parsing identifiers from a string", "[identifier]")
         REQUIRE(iss.peek() == '=');
     }
 }
+
+
+TEST_CASE("parsing at end if stream", "[end]")
+{
+    SECTION("return column at end of stream")
+    {
+        std::istringstream iss {"identifier"};
+        Parser parser {iss};
+
+        parser.parseIdentifier();
+
+        REQUIRE(parser.getColumn() == 10);
+    }
+}

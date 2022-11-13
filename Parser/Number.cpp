@@ -33,7 +33,6 @@ public:
 
 private:
     Parser &parser;
-    unsigned column;
     void (NumberParser::*parse)(int next_char);
     bool is_floating_point;
     bool is_done;
@@ -51,7 +50,6 @@ NumberParser::NumberParser(Parser &parser) :
 std::optional<double> NumberParser::operator()()
 {
     do {
-        column = parser.getColumn();
         auto next_char = parser.peekNextChar();
         (this->*parse)(next_char);
     } while (!is_done);
@@ -89,7 +87,7 @@ void NumberParser::parseZero(int next_char)
     if (next_char == '.') {
         parse = &NumberParser::parseMantissa;
     } else if (isdigit(next_char)) {
-        throw ParseError {"expected decimal point after leading zero", column};
+        throw ParseError {"expected decimal point after leading zero", parser.getColumn()};
     } else {
         is_done = true;
     }
@@ -100,7 +98,7 @@ void NumberParser::parsePeriod(int next_char)
     if (isdigit(next_char)) {
         parse = &NumberParser::parseMantissa;
     } else {
-        throw ParseError {"expected digit after decimal point", column};
+        throw ParseError {"expected digit after decimal point", parser.getColumn()};
     }
 }
 
@@ -124,7 +122,7 @@ void NumberParser::parseExponent(int next_char)
     } else if (isdigit(next_char)) {
         parse = &NumberParser::parseExponentDigits;
     } else {
-        throw ParseError {"expected sign or digit for exponent", column};
+        throw ParseError {"expected sign or digit for exponent", parser.getColumn()};
     }
     is_floating_point = true;
     addNextChar();
@@ -135,7 +133,7 @@ void NumberParser::parseExponentSign(int next_char)
     if (isdigit(next_char)) {
         parse = &NumberParser::parseExponentDigits;
     } else {
-        throw ParseError {"expected digit after exponent sign", column};
+        throw ParseError {"expected digit after exponent sign", parser.getColumn()};
     }
 }
 

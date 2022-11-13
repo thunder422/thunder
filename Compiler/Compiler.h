@@ -11,10 +11,10 @@
 #include <stack>
 #include <Parser/Parser.h>
 #include <Program/OpCode.h>
+#include <Program/OtherOperatorFwd.h>
 #include <Program/WordType.h>
 
 
-enum class Precedence : int;
 class ProgramCode;
 
 class Compiler {
@@ -23,24 +23,20 @@ public:
     void compileLine();
     bool compileExpression();
     void addOpCode(OpCode opcode);
+    char peekNextChar();
 
 private:
     bool compileUnaryExpression();
     bool compileNumConst();
     bool compileUnaryOperator();
     bool compileBinaryOperator();
+    OtherOperator determineOtherOperator();
     void flushOperatorStack(Precedence higher_or_same);
 
-    class Operator {
-    public:
-        Operator(OpCode opcode, Precedence precedence) :
-            opcode {opcode}, precedence {precedence} { }
-
-        OpCode opcode;
-        Precedence precedence;
-    };
+    class SubExpression { };
 
     ProgramCode &code;
     Parser parser;
     std::stack<Operator> operator_stack;
+    std::stack<SubExpression> sub_expression;
 };

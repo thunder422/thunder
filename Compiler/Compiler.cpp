@@ -11,22 +11,14 @@
 #include <Program/Code.h>
 #include <Program/Commands.h>
 #include <Program/Operators.h>
+#include <Program/OtherOperator.h>
+#include <Program/Precedence.h>
 #include <Program/Recreator.h>
 #include "Compiler.h"
 
 
 extern OpCode const_num_opcode;
-OpCode bottom_opcode;
-
-bool operator==(OpCode &lhs, OpCode &rhs)
-{
-    return lhs.getValue() == rhs.getValue();
-}
-
-bool operator!=(OpCode &lhs, OpCode &rhs)
-{
-    return !(lhs == rhs);
-}
+OpCode null_opcode;
 
 
 Compiler::Compiler(ProgramCode &code, std::istream &is) :
@@ -48,12 +40,16 @@ void Compiler::compileLine()
 
 bool Compiler::compileExpression()
 {
-    operator_stack.emplace(bottom_opcode, Operators::bottom_precedence);
+    operator_stack.emplace(null_opcode, Precedence::Bottom);
     if (compileUnaryExpression()) {
         while (compileBinaryOperator()) {
             compileUnaryExpression();
         }
-        flushOperatorStack(Operators::lowest_precedence);
+        flushOperatorStack(Precedence::Lowest);
+        if (operator_stack.top().precedence == Precedence::OpenParen) {
+            throw ParseError {"expected binary operator or closing parenthesis",
+                parser.getColumn()};
+        }
         return true;
     }
     return false;
@@ -66,9 +62,8 @@ bool Compiler::compileUnaryExpression()
             return true;
         } else if (compileUnaryOperator()) {
             parser.skipWhiteSpace();
-        } else if (operator_stack.top().opcode != bottom_opcode) {
-            unsigned column = parser.getColumn();
-            throw ParseError {"expected unary operator or operand", column};
+        } else if (operator_stack.top().precedence != Precedence::Bottom) {
+            throw ParseError {"expected unary operator or operand", parser.getColumn()};
         } else {
             return false;
         }
@@ -91,10 +86,13 @@ bool Compiler::compileNumConst()
 bool Compiler::compileUnaryOperator()
 {
     parser.skipWhiteSpace();
-    auto opcode = Operators::getUnaryOpcode(parser.peekNextChar());
-    if (opcode) {
+    auto operator_ = Operators::getUnaryOpcode(parser.peekNextChar());
+    if (operator_) {
         parser.getNextChar();
-        operator_stack.emplace(*opcode, Operators::getPrecedence(*opcode));
+        operator_stack.emplace(*operator_);
+        if (operator_->precedence == Precedence::OpenParen) {
+            sub_expression.emplace();
+        }
         return true;
     }
     return false;
@@ -102,16 +100,33 @@ bool Compiler::compileUnaryOperator()
 
 bool Compiler::compileBinaryOperator()
 {
-    parser.skipWhiteSpace();
-    auto opcode = Operators::getBinaryOpcode(parser.peekNextChar());
-    if (opcode) {
-        parser.getNextChar();
-        auto operator_precendence = Operators::getPrecedence(*opcode);
-        flushOperatorStack(operator_precendence);
-        operator_stack.emplace(*opcode, operator_precendence);
-        return true;
+    for (;;) {
+        parser.skipWhiteSpace();
+        auto optional_operator = determineOtherOperator();
+        auto operator_ = Operators::getBinaryOpcode(parser.peekNextChar(), optional_operator);
+        if (operator_) {
+            parser.getNextChar();
+            flushOperatorStack(operator_->precedence);
+            if (operator_->precedence == Precedence::CloseParen) {
+                operator_stack.pop();
+                sub_expression.pop();
+                continue;
+            } else {
+                operator_stack.emplace(*operator_);
+            }
+            return true;
+        }
+        return false;
     }
-    return false;
+}
+
+OtherOperator Compiler::determineOtherOperator()
+{
+    if (sub_expression.empty()) {
+        return OtherOperator::None;
+    } else {
+        return OtherOperator::CloseParen;
+    }
 }
 
 void Compiler::flushOperatorStack(Precedence higher_or_same)
@@ -125,4 +140,9 @@ void Compiler::flushOperatorStack(Precedence higher_or_same)
 void Compiler::addOpCode(OpCode opcode)
 {
     code.addOpCode(opcode);
+}
+
+char Compiler::peekNextChar()
+{
+    return parser.peekNextChar();
 }

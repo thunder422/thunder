@@ -11,6 +11,10 @@ set(PROGRAM_HEADERS
   OpCode.h
   OpCodes.h
   Operators.h
+  OtherOperator.h
+  OtherOperatorFwd.h
+  Precedence.h
+  PrecendenceFwd.h
   Recreator.h
   Runner.h
   Unit.h

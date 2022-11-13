@@ -135,7 +135,7 @@ TEST_CASE("parsing floating point constants from a string", "[doubles]")
 
 TEST_CASE("handle leading zero of a constant correctly including errors", "[zero]")
 {
-    SECTION("check for an error when a leading zero is not followed by a digit")
+    SECTION("check for an error when a leading zero is followed by another digit")
     {
         std::istringstream iss {"01"};
 

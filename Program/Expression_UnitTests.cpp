@@ -8,11 +8,14 @@
 #include <sstream>
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_exception.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
 #include <Compiler/Compiler.h>
 #include <Parser/Error.h>
 #include "Code.h"
 #include "Runner.h"
 #include "View.h"
+
+using namespace Catch::Matchers;
 
 
 extern OpCode end_opcode;
@@ -234,5 +237,58 @@ TEST_CASE("compile, recreate and run binary power operator", "[pow]")
 
         REQUIRE(expression.recreate() == "4 ^ 3 ^ 2");
         REQUIRE(expression.run() == 4096);
+    }
+}
+
+TEST_CASE("compile, recreate and run expressions with parentheses", "[parens]")
+{
+    ExpressionTester expression;
+
+    SECTION("multiply operator with add operator on left side")
+    {
+        expression.compile("(1.2+3.4)*5.6");
+
+        REQUIRE(expression.recreate() == "(1.2 + 3.4) * 5.6");
+        REQUIRE_THAT(expression.run(), WithinAbs(25.76, 0.00001));
+    }
+    SECTION("multiply operator with add operator on right side")
+    {
+        expression.compile("1.2*(3.4+5.6)");
+
+        REQUIRE(expression.recreate() == "1.2 * (3.4 + 5.6)");
+        REQUIRE_THAT(expression.run(), WithinAbs(10.8, 0.00001));
+    }
+    SECTION("add operator with add operator on left side (removes parentheses")
+    {
+        expression.compile("(1.2+3.4)+5.6");
+
+        REQUIRE(expression.recreate() == "1.2 + 3.4 + 5.6");
+        REQUIRE_THAT(expression.run(), WithinAbs(10.2, 0.00001));
+    }
+    SECTION("add operator with add operator on right side (keeps parentheses")
+    {
+        expression.compile("1.2+(3.4+5.6)");
+
+        REQUIRE(expression.recreate() == "1.2 + (3.4 + 5.6)");
+        REQUIRE_THAT(expression.run(), WithinAbs(10.2, 0.00001));
+    }
+    SECTION("expect an error if closing parenthesis is missing")
+    {
+        auto missing_paren = "1.2+(3.4+5.6;";
+
+        SECTION("check for error message")
+        {
+            REQUIRE_THROWS_WITH(expression.compile(missing_paren),
+                "expected binary operator or closing parenthesis");
+        }
+        SECTION("check for error column")
+        {
+            try {
+                expression.compile(missing_paren);
+            }
+            catch (const ParseError &error) {
+                REQUIRE(error.column == 12);
+            }
+        }
     }
 }

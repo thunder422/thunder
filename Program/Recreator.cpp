@@ -26,25 +26,38 @@ void recreateConstNum(Recreator &recreator)
 
     char string[20];
     auto [end, error_code] = std::to_chars(string, string + sizeof(string), number);
-    recreator.pushString(std::string{string, end});
+    recreator.pushString(std::string{string, end}, Precedence::Operand);
 }
 
 void recreateUnaryOperator(Recreator &recreator)
 {
-    std::string string {Operators::getUnaryChar(recreator.getOpcode())};
+    auto unary_opcode = recreator.getOpcode();
+    std::string string {Operators::getUnaryChar(unary_opcode)};
     auto &top_string = recreator.topString();
     if (isdigit(top_string.front())) {
         string.append(1, ' ');
     }
     string.append(top_string);
     recreator.swapTopString(string);
+    recreator.setTopPrecedence(Operators::getPrecedence(unary_opcode));
 }
 
 void recreateBinaryOperator(Recreator &recreator)
 {
-    std::string rhs_string {recreator.popString()};
-    recreator.topString().append(1, ' ').append(Operators::getBinaryChar(recreator.getOpcode()))
-        .append(1, ' ').append(rhs_string);
+    auto rhs = recreator.popStack();
+    auto operator_opcode = recreator.getOpcode();
+    auto operator_precedence = Operators::getPrecedence(operator_opcode);
+    if (recreator.topPrecedence() < operator_precedence) {
+        std::string lhs = '(' + recreator.topString() + ')';
+        recreator.swapTopString(lhs);
+    }
+    recreator.topString().append(1, ' ').append(Operators::getBinaryChar(operator_opcode))
+        .append(1, ' ');
+    if (rhs.precedence <= operator_precedence) {
+        rhs.string = '(' + rhs.string + ')';
+    }
+    recreator.topString().append(rhs.string);
+    recreator.setTopPrecedence(operator_precedence);
 }
 
 Recreator::Recreator(ProgramCode &code) :
@@ -55,10 +68,10 @@ Recreator::Recreator(ProgramCode &code) :
 void Recreator::addCommandKeyword()
 {
     std::string string {Commands::getKeyword(code.getWord(offset))};
-    if (string_stack.empty()) {
-        pushString(std::move(string));
+    if (stack.empty()) {
+        pushString(std::move(string), Precedence{});
     } else {
-        string.append(1, ' ').append(string_stack.top());
+        string.append(1, ' ').append(topString());
         swapTopString(string);
     }
 }
@@ -78,25 +91,35 @@ double Recreator::getConstNum(std::size_t index)
     return code.getConstNum(index);
 }
 
-void Recreator::pushString(std::string string)
+void Recreator::pushString(std::string string, Precedence precedence)
 {
-    string_stack.emplace(std::move(string));
+    stack.emplace(std::move(string), precedence);
 }
 
 std::string &Recreator::topString()
 {
-    return string_stack.top();
+    return stack.top().string;
+}
+
+Precedence Recreator::topPrecedence()
+{
+    return stack.top().precedence;
 }
 
 void Recreator::swapTopString(std::string &string)
 {
-    string_stack.top().swap(string);
+    stack.top().string.swap(string);
 }
 
-std::string Recreator::popString()
+void Recreator::setTopPrecedence(Precedence precedence)
 {
-    auto string = std::move(string_stack.top());
-    string_stack.pop();
+    stack.top().precedence = precedence;
+}
+
+Recreator::String Recreator::popStack()
+{
+    auto string = std::move(stack.top());
+    stack.pop();
     return string;
 }
 
@@ -109,5 +132,5 @@ std::string Recreator::recreateLine(const ProgramView &line_view)
         OpCodes::getRecreateFunction(opcode)(*this);
         ++offset;
     }
-    return popString();
+    return popStack().string;
 }

@@ -9,6 +9,7 @@
 
 #include <stack>
 #include <string>
+#include "PrecendenceFwd.h"
 #include "WordType.h"
 
 
@@ -17,20 +18,31 @@ class ProgramView;
 
 class Recreator {
 public:
+    class String {
+    public:
+        String(std::string string, Precedence precedence) :
+            string {string}, precedence {precedence} { }
+
+        std::string string;
+        Precedence precedence;
+    };
+
     Recreator(ProgramCode &code);
     void addCommandKeyword();
     std::size_t getOpcode();
     std::size_t getOperand();
     double getConstNum(std::size_t index);
-    void pushString(std::string string);
+    void pushString(std::string string, Precedence precedence);
     std::string &topString();
+    Precedence topPrecedence();
     void swapTopString(std::string &string);
-    std::string popString();
+    void setTopPrecedence(Precedence precedence);
+    String popStack();
     std::string recreateLine(const ProgramView &line_view);
 
 private:
     ProgramCode &code;
     std::size_t offset;
     WordType opcode;
-    std::stack<std::string> string_stack;
+    std::stack<String> stack;
 };

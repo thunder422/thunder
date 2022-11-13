@@ -60,7 +60,6 @@ TEST_CASE("compile an invalid command", "[invalid]")
         std::istringstream iss {"bogus"};
         Compiler compiler {code, iss};
 
-
         SECTION("check for error message")
         {
             REQUIRE_THROWS_WITH(compiler.compileLine(),
@@ -74,6 +73,28 @@ TEST_CASE("compile an invalid command", "[invalid]")
             catch (const ParseError &error) {
                 REQUIRE(error.column == 0);
             }
+        }
+    }
+}
+
+TEST_CASE("compile peek at next character not parsed", "[peek]")
+{
+    ProgramCode code;
+
+    SECTION("if there is no open parenthesis, then parsing should stop at a closing parenthesis")
+    {
+        std::istringstream iss {"1.2+3.4+5.6)"};
+        Compiler compiler {code, iss};
+
+        SECTION("expression will compile successfully")
+        {
+            REQUIRE(compiler.compileExpression());
+        }
+        SECTION("closing parenthesis remains in stream")
+        {
+            compiler.compileExpression();
+
+            REQUIRE(compiler.peekNextChar() == ')');
         }
     }
 }

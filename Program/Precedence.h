@@ -7,11 +7,15 @@
 
 #pragma once
 
-#include <stdexcept>
 
-
-struct ParseError : public std::runtime_error {
-    ParseError(const char *message, long column) : runtime_error {message}, column {column} { }
-
-    long column;
+enum class Precedence : int {
+    Bottom,
+    OpenParen,
+    CloseParen,
+    Lowest,
+    Add,
+    Mul,
+    Neq,
+    Pow,
+    Operand
 };
