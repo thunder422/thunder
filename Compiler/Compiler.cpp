@@ -41,6 +41,7 @@ void Compiler::compileLine()
 bool Compiler::compileExpression()
 {
     operator_stack.emplace(null_opcode, Precedence::Bottom);
+    sub_expression.emplace(OtherOperator::None);
     if (compileUnaryExpression()) {
         while (compileBinaryOperator()) {
             compileUnaryExpression();
@@ -91,7 +92,7 @@ bool Compiler::compileUnaryOperator()
         parser.getNextChar();
         operator_stack.emplace(*operator_);
         if (operator_->precedence == Precedence::OpenParen) {
-            sub_expression.emplace();
+            sub_expression.emplace(OtherOperator::CloseParen);
         }
         return true;
     }
@@ -102,8 +103,8 @@ bool Compiler::compileBinaryOperator()
 {
     for (;;) {
         parser.skipWhiteSpace();
-        auto optional_operator = determineOtherOperator();
-        auto operator_ = Operators::getBinaryOpcode(parser.peekNextChar(), optional_operator);
+        auto other_operator = sub_expression.top().other_operator;
+        auto operator_ = Operators::getBinaryOpcode(parser.peekNextChar(), other_operator);
         if (operator_) {
             parser.getNextChar();
             flushOperatorStack(operator_->precedence);
@@ -117,15 +118,6 @@ bool Compiler::compileBinaryOperator()
             return true;
         }
         return false;
-    }
-}
-
-OtherOperator Compiler::determineOtherOperator()
-{
-    if (sub_expression.empty()) {
-        return OtherOperator::None;
-    } else {
-        return OtherOperator::CloseParen;
     }
 }
 

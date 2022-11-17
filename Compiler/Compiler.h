@@ -30,10 +30,14 @@ private:
     bool compileNumConst();
     bool compileUnaryOperator();
     bool compileBinaryOperator();
-    OtherOperator determineOtherOperator();
     void flushOperatorStack(Precedence higher_or_same);
 
-    class SubExpression { };
+    class SubExpression {
+    public:
+        SubExpression(OtherOperator other_operator) : other_operator {other_operator} { }
+
+        OtherOperator other_operator;
+    };
 
     ProgramCode &code;
     Parser parser;
