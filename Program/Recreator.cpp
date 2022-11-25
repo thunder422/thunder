@@ -8,6 +8,7 @@
 #include <charconv>
 #include "Code.h"
 #include "Commands.h"
+#include "Functions.h"
 #include "OpCodes.h"
 #include "Operators.h"
 #include "Recreator.h"
@@ -58,6 +59,14 @@ void recreateBinaryOperator(Recreator &recreator)
     }
     recreator.topString().append(rhs.string);
     recreator.setTopPrecedence(operator_precedence);
+}
+
+void recreateFunction(Recreator &recreator)
+{
+    std::string function {Functions::getFunctionName(recreator.getOpcode())};
+    function.append(1, '(').append(recreator.topString()).append(1, ')');
+    recreator.swapTopString(function);
+    recreator.setTopPrecedence(Precedence::Operand);
 }
 
 Recreator::Recreator(ProgramCode &code) :

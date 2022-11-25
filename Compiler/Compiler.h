@@ -26,9 +26,15 @@ public:
     char peekNextChar();
 
 private:
+    enum class Operand {
+        None,
+        SubExpression
+    };
+
     bool compileUnaryExpression();
     bool compileNumConst();
     bool compileUnaryOperator();
+    Operand compileOperand();
     bool compileBinaryOperator();
     void flushOperatorStack(Precedence higher_or_same);
 

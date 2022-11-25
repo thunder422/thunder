@@ -7,6 +7,7 @@
 set(PARSER_HEADERS
   Error.h
   Parser.h
+  Token.h
 )
 set(PARSER_SOURCES
   Identifier.cpp
@@ -19,6 +20,8 @@ add_executable(Identifier_UnitTests
   Identifier.cpp
   Identifier_UnitTests.cpp
   Parser.h
+  Parser.cpp
+  Token.h
 )
 target_link_libraries(Identifier_UnitTests PRIVATE Catch2::Catch2WithMain)
 add_covered_test(Identifier_UnitTests)

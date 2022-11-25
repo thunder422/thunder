@@ -7,6 +7,7 @@
 set(PROGRAM_HEADERS
   Code.h
   Commands.h
+  Functions.h
   Lines.h
   OpCode.h
   OpCodes.h
@@ -23,6 +24,7 @@ set(PROGRAM_HEADERS
 set(PROGRAM_SOURCES
   Code.cpp
   Commands.cpp
+  Functions.cpp
   Lines.cpp
   OpCode.cpp
   OpCodes.cpp

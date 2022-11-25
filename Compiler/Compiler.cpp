@@ -8,8 +8,10 @@
 #include <map>
 #include <string_view>
 #include <Parser/Error.h>
+#include <Parser/Token.h>
 #include <Program/Code.h>
 #include <Program/Commands.h>
+#include <Program/Functions.h>
 #include <Program/Operators.h>
 #include <Program/OtherOperator.h>
 #include <Program/Precedence.h>
@@ -63,6 +65,8 @@ bool Compiler::compileUnaryExpression()
             return true;
         } else if (compileUnaryOperator()) {
             parser.skipWhiteSpace();
+        } else if (compileOperand() != Operand::None) {
+            continue;
         } else if (operator_stack.top().precedence != Precedence::Bottom) {
             throw ParseError {"expected unary operator or operand", parser.getColumn()};
         } else {
@@ -99,6 +103,21 @@ bool Compiler::compileUnaryOperator()
     return false;
 }
 
+Compiler::Operand Compiler::compileOperand()
+{
+    if (auto token = parser.parseToken()) {
+        auto function_opcode = Functions::getFunctionOpcode(token);
+        if (token.hasParen()) {
+            operator_stack.emplace(*function_opcode, Precedence::Function);
+            sub_expression.emplace(OtherOperator::CloseParen);
+        } else {
+            operator_stack.emplace(*function_opcode, Precedence::UnaryFunc);
+        }
+        return Operand::SubExpression;
+    }
+    return Operand::None;
+}
+
 bool Compiler::compileBinaryOperator()
 {
     for (;;) {
@@ -109,6 +128,9 @@ bool Compiler::compileBinaryOperator()
             parser.getNextChar();
             flushOperatorStack(operator_->precedence);
             if (operator_->precedence == Precedence::CloseParen) {
+                if (operator_stack.top().precedence == Precedence::Function) {
+                    addOpCode(operator_stack.top().opcode);
+                }
                 operator_stack.pop();
                 sub_expression.pop();
                 continue;

@@ -292,3 +292,113 @@ TEST_CASE("compile, recreate and run expressions with parentheses", "[parens]")
         }
     }
 }
+
+TEST_CASE("compile, recreate and run expressions with functions", "[functions]")
+{
+    ExpressionTester expression;
+
+    SECTION("absolute function")
+    {
+        expression.compile("abs(-1.2)");
+
+        REQUIRE(expression.recreate() == "abs(-1.2)");
+        REQUIRE(expression.run() == 1.2);
+    }
+    SECTION("integer function (largest whole integer)")
+    {
+        SECTION("positive argument")
+        {
+            expression.compile("int(1.8)");
+
+            REQUIRE(expression.recreate() == "int(1.8)");
+            REQUIRE(expression.run() == 1);
+        }
+        SECTION("negative argument")
+        {
+            expression.compile("int(-1.8)");
+
+            REQUIRE(expression.recreate() == "int(-1.8)");
+            REQUIRE(expression.run() == -2);
+        }
+    }
+    SECTION("square root function")
+    {
+        expression.compile("sqr(25)");
+
+        REQUIRE(expression.recreate() == "sqr(25)");
+        REQUIRE(expression.run() == 5);
+    }
+    SECTION("natural logarithm function")
+    {
+        expression.compile("log(25)");
+
+        REQUIRE(expression.recreate() == "log(25)");
+        REQUIRE(expression.run() == 3.21887582486820075);
+    }
+    SECTION("base-e exponential function")
+    {
+        expression.compile("exp(3.2188758248682006)");
+
+        REQUIRE(expression.recreate() == "exp(3.2188758248682006)");
+        REQUIRE_THAT(expression.run(), WithinAbs(25, 0.00001));
+    }
+    SECTION("signum function")
+    {
+        SECTION("zero value")
+        {
+            expression.compile("sgn(0)");
+
+            REQUIRE(expression.recreate() == "sgn(0)");
+            REQUIRE(expression.run() == 0);
+        }
+        SECTION("positive value")
+        {
+            expression.compile("sgn(2.5)");
+
+            REQUIRE(expression.recreate() == "sgn(2.5)");
+            REQUIRE(expression.run() == 1);
+        }
+        SECTION("negative value")
+        {
+            expression.compile("sgn(-5.2)");
+
+            REQUIRE(expression.recreate() == "sgn(-5.2)");
+            REQUIRE(expression.run() == -1);
+        }
+    }
+    SECTION("cosine function")
+    {
+        expression.compile("cos(2)");
+
+        REQUIRE(expression.recreate() == "cos(2)");
+        REQUIRE(expression.run() == -0.4161468365471424);
+    }
+    SECTION("sine function")
+    {
+        expression.compile("sin(2)");
+
+        REQUIRE(expression.recreate() == "sin(2)");
+        REQUIRE(expression.run() == 0.9092974268256817);
+    }
+    SECTION("tangent function")
+    {
+        expression.compile("tan(2)");
+
+        REQUIRE(expression.recreate() == "tan(2)");
+        REQUIRE(expression.run() == -2.185039863261519);
+    }
+    SECTION("arc tangent function")
+    {
+        expression.compile("atn(2)");
+
+        REQUIRE(expression.recreate() == "atn(2)");
+        REQUIRE(expression.run() == 1.1071487177940905);
+    }
+    SECTION("functions can be entered with no parentheses (will be added)")
+    {
+        expression.compile("sin 2 + 1");
+
+        REQUIRE(expression.recreate() == "sin(2) + 1");
+        REQUIRE(expression.run() == 1.9092974268256817);
+    }
+}

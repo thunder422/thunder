@@ -9,6 +9,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include "Parser.h"
+#include "Token.h"
 
 using namespace std::string_view_literals;
 
@@ -50,6 +51,36 @@ TEST_CASE("parsing identifiers from a string", "[identifier]")
     }
 }
 
+TEST_CASE("get tokens (identifiers with modifiers)", "[tokens]")
+{
+    SECTION("get a token with no open parenthesis modifier")
+    {
+        std::istringstream iss {"VAR="};
+
+        auto token = Parser{iss}.parseToken();
+
+        REQUIRE(token.getValue() == "VAR");
+        REQUIRE_FALSE(token.hasParen());
+    }
+    SECTION("get a token with a open parenthesis modifier")
+    {
+        std::istringstream iss {"FUNC(1"};
+
+        auto token = Parser{iss}.parseToken();
+
+        REQUIRE(token.getValue() == "FUNC");
+        REQUIRE(token.hasParen());
+        REQUIRE(iss.peek() == '1');
+    }
+    SECTION("no token returned if there is no tokwn")
+    {
+        std::istringstream iss {"123"};
+
+        auto token = Parser{iss}.parseToken();
+
+        REQUIRE_FALSE(token);
+    }
+}
 
 TEST_CASE("parsing at end if stream", "[end]")
 {

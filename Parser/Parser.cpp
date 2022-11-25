@@ -6,6 +6,7 @@
  */
 
 #include "Parser.h"
+#include "Token.h"
 
 
 void Parser::skipWhiteSpace()
@@ -13,4 +14,15 @@ void Parser::skipWhiteSpace()
     while (std::isspace(peekNextChar())) {
         getNextChar();
     }
+}
+
+Token Parser::parseToken()
+{
+    auto identifier = parseIdentifier();
+    bool has_paren = false;
+    if (peekNextChar() == '(') {
+        has_paren = true;
+        getNextChar();
+    }
+    return Token {std::move(identifier), has_paren};
 }

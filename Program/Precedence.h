@@ -11,11 +11,13 @@
 enum class Precedence : int {
     Bottom,
     OpenParen,
+    Function,
     CloseParen,
     Lowest,
     Add,
     Mul,
     Neq,
     Pow,
+    UnaryFunc,
     Operand
 };

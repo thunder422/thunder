@@ -11,11 +11,15 @@
 #include <optional>
 
 
+class Token;
+
+
 class Parser {
 public:
     Parser(std::istream &is);
 
     void skipWhiteSpace();
+    Token parseToken();
     std::string parseIdentifier();
     std::optional<double> parseNumber();
 

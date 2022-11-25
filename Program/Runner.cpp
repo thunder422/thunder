@@ -86,6 +86,63 @@ void runPow(Runner &runner)
     runner.topNumber() = std::pow(runner.topNumber(), rhs);
 }
 
+void runAbs(Runner &runner)
+{
+    runner.topNumber() = std::abs(runner.topNumber());
+}
+
+void runInt(Runner &runner)
+{
+    runner.topNumber() = std::floor(runner.topNumber());
+}
+
+void runSgn(Runner &runner)
+{
+    auto argument = runner.topNumber();
+    if (argument > 0) {
+        runner.topNumber() = 1;
+    } else if (argument < 0) {
+        runner.topNumber() = -1;
+    } else {
+        runner.topNumber() = 0;
+    }
+}
+
+void runSqr(Runner &runner)
+{
+    runner.topNumber() = std::sqrt(runner.topNumber());
+}
+
+void runLog(Runner &runner)
+{
+    runner.topNumber() = std::log(runner.topNumber());
+}
+
+void runExp(Runner &runner)
+{
+    runner.topNumber() = std::exp(runner.topNumber());
+}
+
+void runCos(Runner &runner)
+{
+    runner.topNumber() = std::cos(runner.topNumber());
+}
+
+void runSin(Runner &runner)
+{
+    runner.topNumber() = std::sin(runner.topNumber());
+}
+
+void runTan(Runner &runner)
+{
+    runner.topNumber() = std::tan(runner.topNumber());
+}
+
+void runAtn(Runner &runner)
+{
+    runner.topNumber() = std::atan(runner.topNumber());
+}
+
 Runner::Runner(ProgramCode &code, std::ostream &os) :
     code {code},
     os {os}

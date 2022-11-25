@@ -34,6 +34,16 @@ extern OpCode div_opcode;
 extern OpCode mod_opcode;
 extern OpCode idiv_opcode;
 extern OpCode pow_opcode;
+extern OpCode abs_opcode;
+extern OpCode int_opcode;
+extern OpCode sgn_opcode;
+extern OpCode sqr_opcode;
+extern OpCode log_opcode;
+extern OpCode exp_opcode;
+extern OpCode cos_opcode;
+extern OpCode sin_opcode;
+extern OpCode tan_opcode;
+extern OpCode atn_opcode;
 extern OpCode print_opcode;
 extern OpCode print_num_opcode;
 extern OpCode end_opcode;
@@ -50,11 +60,22 @@ void runDiv(Runner &runner);
 void runMod(Runner &runner);
 void runIdiv(Runner &runner);
 void runPow(Runner &runner);
+void runAbs(Runner &runner);
+void runInt(Runner &runner);
+void runSgn(Runner &runner);
+void runSqr(Runner &runner);
+void runLog(Runner &runner);
+void runExp(Runner &runner);
+void runCos(Runner &runner);
+void runSin(Runner &runner);
+void runTan(Runner &runner);
+void runAtn(Runner &runner);
 
 void recreateCommand(Recreator &recreator);
 void recreateConstNum(Recreator &recreator);
 void recreateUnaryOperator(Recreator &recreator);
 void recreateBinaryOperator(Recreator &recreator);
+void recreateFunction(Recreator &recreator);
 
 void recreateNothing(Recreator &)
 {
@@ -74,7 +95,17 @@ OpCodes &opcodes()
         {div_opcode, recreateBinaryOperator, runDiv},
         {mod_opcode, recreateBinaryOperator, runMod},
         {idiv_opcode, recreateBinaryOperator, runIdiv},
-        {pow_opcode, recreateBinaryOperator, runPow}
+        {pow_opcode, recreateBinaryOperator, runPow},
+        {abs_opcode, recreateFunction, runAbs},
+        {int_opcode, recreateFunction, runInt},
+        {sgn_opcode, recreateFunction, runSgn},
+        {sqr_opcode, recreateFunction, runSqr},
+        {log_opcode, recreateFunction, runLog},
+        {exp_opcode, recreateFunction, runExp},
+        {cos_opcode, recreateFunction, runCos},
+        {sin_opcode, recreateFunction, runSin},
+        {tan_opcode, recreateFunction, runTan},
+        {atn_opcode, recreateFunction, runAtn}
     };
     return opcodes;
 }
