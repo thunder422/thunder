@@ -63,10 +63,14 @@ void recreateBinaryOperator(Recreator &recreator)
 
 void recreateFunction(Recreator &recreator)
 {
-    std::string function {Functions::getFunctionName(recreator.getOpcode())};
-    function.append(1, '(').append(recreator.topString()).append(1, ')');
-    recreator.swapTopString(function);
-    recreator.setTopPrecedence(Precedence::Operand);
+    std::string function {Functions::getName(recreator.getOpcode())};
+    if (Functions::getNumArguments(recreator.getOpcode()) == 0) {
+        recreator.pushString(std::move(function), Precedence::Operand);
+    } else {
+        function.append(1, '(').append(recreator.topString()).append(1, ')');
+        recreator.swapTopString(function);
+        recreator.setTopPrecedence(Precedence::Operand);
+    }
 }
 
 Recreator::Recreator(ProgramCode &code) :

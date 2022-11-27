@@ -401,4 +401,42 @@ TEST_CASE("compile, recreate and run expressions with functions", "[functions]")
         REQUIRE(expression.recreate() == "sin(2) + 1");
         REQUIRE(expression.run() == 1.9092974268256817);
     }
+    SECTION("random number (starts with same random sequence for each test)")
+    {
+        SECTION("scaled 0 to 1")
+        {
+            expression.compile("rnd(1)");
+
+            REQUIRE(expression.recreate() == "rnd(1)");
+            REQUIRE(expression.run() == 0.786820954867802);
+        }
+        SECTION("scaled 0 to 10")
+        {
+            expression.compile("rnd(10)");
+
+            REQUIRE(expression.recreate() == "rnd(10)");
+            REQUIRE(expression.run() == 7.868209548678021);
+        }
+        SECTION("also can be scaled negative 0 to -5")
+        {
+            expression.compile("rnd(-5)");
+
+            REQUIRE(expression.recreate() == "rnd(-5)");
+            REQUIRE(expression.run() == -3.9341047743390103);
+        }
+        SECTION("return last random number when argument is 0 (value doubled)")
+        {
+            expression.compile("rnd(5)+rnd(0)");
+
+            REQUIRE(expression.recreate() == "rnd(5) + rnd(0)");
+            REQUIRE(expression.run() == 7.868209548678021);
+        }
+        SECTION("random number function with no argument")
+        {
+            expression.compile("rnd");
+
+            REQUIRE(expression.recreate() == "rnd");
+            REQUIRE(expression.run() == 0.786820954867802);
+        }
+    }
 }

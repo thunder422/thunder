@@ -14,18 +14,24 @@
 
 
 struct Function;
+struct AlternateFunction;
 class OpCode;
 class Token;
 
 
 class Functions {
 public:
-    static std::optional<OpCode> getFunctionOpcode(const Token &token);
-    static std::string_view getFunctionName(WordType opcode);
+    static std::optional<OpCode> getOpcode(const Token &token);
+    static std::optional<OpCode> getAlternateOpcode(OpCode &opcode);
+    static std::string_view getName(WordType opcode);
+    static int getNumArguments(WordType opcode);
 
-    Functions(std::initializer_list<Function> function_initializers);
+    Functions(std::initializer_list<Function> functions,
+        std::initializer_list<AlternateFunction> alternates);
 
 private:
-    std::map<std::string_view, OpCode> function_opcodes;
-    std::map<WordType, std::string_view> function_names;
+    std::map<std::string_view, OpCode> opcodes;
+    std::map<WordType, std::string_view> names;
+    std::map<WordType, OpCode> alternate_opcodes;
+    std::map<WordType, int> num_arguments;
 };

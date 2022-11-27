@@ -36,6 +36,8 @@ extern OpCode idiv_opcode;
 extern OpCode pow_opcode;
 extern OpCode abs_opcode;
 extern OpCode int_opcode;
+extern OpCode rnd_opcode;
+extern OpCode rnd0_opcode;
 extern OpCode sgn_opcode;
 extern OpCode sqr_opcode;
 extern OpCode log_opcode;
@@ -62,6 +64,8 @@ void runIdiv(Runner &runner);
 void runPow(Runner &runner);
 void runAbs(Runner &runner);
 void runInt(Runner &runner);
+void runRnd(Runner &runner);
+void runRnd0(Runner &runner);
 void runSgn(Runner &runner);
 void runSqr(Runner &runner);
 void runLog(Runner &runner);
@@ -98,6 +102,8 @@ OpCodes &opcodes()
         {pow_opcode, recreateBinaryOperator, runPow},
         {abs_opcode, recreateFunction, runAbs},
         {int_opcode, recreateFunction, runInt},
+        {rnd_opcode, recreateFunction, runRnd},
+        {rnd0_opcode, recreateFunction, runRnd0},
         {sgn_opcode, recreateFunction, runSgn},
         {sqr_opcode, recreateFunction, runSqr},
         {log_opcode, recreateFunction, runLog},

@@ -28,6 +28,7 @@ public:
 private:
     enum class Operand {
         None,
+        Added,
         SubExpression
     };
 

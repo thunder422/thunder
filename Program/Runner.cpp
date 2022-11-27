@@ -8,9 +8,34 @@
 #include <charconv>
 #include <cmath>
 #include <iostream>
+#include <random>
 #include "Code.h"
 #include "OpCodes.h"
 #include "Runner.h"
+
+
+class RandomNumberGenerator {
+public:
+    RandomNumberGenerator() : uniform_distribution {0.0, 1.0} { }
+    double draw(double scale);
+    double getLastDraw() const;
+
+private:
+    std::mt19937_64 random_generator;
+    std::uniform_real_distribution<double> uniform_distribution;
+    double last_draw {0};
+};
+
+double RandomNumberGenerator::draw(double scale)
+{
+    last_draw = uniform_distribution(random_generator) * scale;
+    return last_draw;
+}
+
+double RandomNumberGenerator::getLastDraw() const
+{
+    return last_draw;
+}
 
 
 void runPrint(Runner &runner)
@@ -96,6 +121,20 @@ void runInt(Runner &runner)
     runner.topNumber() = std::floor(runner.topNumber());
 }
 
+void runRnd(Runner &runner)
+{
+    if (runner.topNumber() == 0) {
+        runner.setTopToLastRandomDraw();
+    } else {
+        runner.topNumber() = runner.getRandomDraw(runner.topNumber());
+    }
+}
+
+void runRnd0(Runner &runner)
+{
+    runner.pushNumber(runner.getRandomDraw(1));
+}
+
 void runSgn(Runner &runner)
 {
     auto argument = runner.topNumber();
@@ -149,9 +188,12 @@ Runner::Runner(ProgramCode &code, std::ostream &os) :
 {
 }
 
+Runner::~Runner() = default;
+
 void Runner::runProgram()
 {
     pc = 0;
+    random_number_generator = std::make_unique<RandomNumberGenerator>();
     while (!is_done) {
         auto opcode = code.getWord(pc);
         OpCodes::getRunFunction(opcode)(*this);
@@ -167,6 +209,16 @@ std::size_t Runner::getOperand()
 double Runner::getConstNum(std::size_t index)
 {
     return code.getConstNum(index);
+}
+
+double Runner::getRandomDraw(double scale)
+{
+    return random_number_generator->draw(scale);
+}
+
+void Runner::setTopToLastRandomDraw()
+{
+    topNumber() = random_number_generator->getLastDraw();
 }
 
 void Runner::output(std::string_view string)

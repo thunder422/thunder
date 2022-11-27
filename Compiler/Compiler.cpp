@@ -65,7 +65,9 @@ bool Compiler::compileUnaryExpression()
             return true;
         } else if (compileUnaryOperator()) {
             parser.skipWhiteSpace();
-        } else if (compileOperand() != Operand::None) {
+        } else if (auto operand = compileOperand(); operand == Operand::Added) {
+            return true;
+        } else if (operand == Operand::SubExpression) {
             continue;
         } else if (operator_stack.top().precedence != Precedence::Bottom) {
             throw ParseError {"expected unary operator or operand", parser.getColumn()};
@@ -106,10 +108,13 @@ bool Compiler::compileUnaryOperator()
 Compiler::Operand Compiler::compileOperand()
 {
     if (auto token = parser.parseToken()) {
-        auto function_opcode = Functions::getFunctionOpcode(token);
+        auto function_opcode = Functions::getOpcode(token);
         if (token.hasParen()) {
             operator_stack.emplace(*function_opcode, Precedence::Function);
             sub_expression.emplace(OtherOperator::CloseParen);
+        } else if (auto alternate_opcode = Functions::getAlternateOpcode(*function_opcode)) {
+            addOpCode(*alternate_opcode);
+            return Operand::Added;
         } else {
             operator_stack.emplace(*function_opcode, Precedence::UnaryFunc);
         }

@@ -15,17 +15,32 @@ struct Function {
     OpCode opcode;
 };
 
+struct AlternateFunction {
+    std::string_view name;
+    OpCode primary_opcode;
+    OpCode alternate_opcode;
+};
 
-Functions::Functions(std::initializer_list<Function> function_initializers)
+
+Functions::Functions(std::initializer_list<Function> functions,
+    std::initializer_list<AlternateFunction> alternates)
 {
-    for (auto &[name, opcode] : function_initializers) {
-        function_opcodes[name] = opcode;
-        function_names[opcode.getValue()] = name;
+    for (auto &[name, opcode] : functions) {
+        opcodes[name] = opcode;
+        names[opcode.getValue()] = name;
+        num_arguments[opcode.getValue()] = 1;
+    }
+    for (auto &[name, primary_opcode, alternate_opcode] : alternates) {
+        alternate_opcodes[primary_opcode.getValue()] = alternate_opcode;
+        names[alternate_opcode.getValue()] = name;
+        num_arguments[alternate_opcode.getValue()] = 0;
     }
 }
 
 OpCode abs_opcode;
 OpCode int_opcode;
+OpCode rnd_opcode;
+OpCode rnd0_opcode;
 OpCode sgn_opcode;
 OpCode sqr_opcode;
 OpCode log_opcode;
@@ -38,27 +53,45 @@ OpCode atn_opcode;
 Functions &functions()
 {
     static Functions functions {
-        {"abs", abs_opcode},
-        {"int", int_opcode},
-        {"sgn", sgn_opcode},
-        {"sqr", sqr_opcode},
-        {"log", log_opcode},
-        {"exp", exp_opcode},
-        {"cos", cos_opcode},
-        {"sin", sin_opcode},
-        {"tan", tan_opcode},
-        {"atn", atn_opcode}
+        {
+            {"abs", abs_opcode},
+            {"int", int_opcode},
+            {"rnd", rnd_opcode},
+            {"sgn", sgn_opcode},
+            {"sqr", sqr_opcode},
+            {"log", log_opcode},
+            {"exp", exp_opcode},
+            {"cos", cos_opcode},
+            {"sin", sin_opcode},
+            {"tan", tan_opcode},
+            {"atn", atn_opcode}
+        }, {
+            {"rnd", rnd_opcode, rnd0_opcode}
+        }
     };
     return functions;
 }
 
-std::optional<OpCode> Functions::getFunctionOpcode(const Token &token)
+std::optional<OpCode> Functions::getOpcode(const Token &token)
 {
-    auto it = functions().function_opcodes.find(token.getValue());
-    return it->second;
+    auto iterator = functions().opcodes.find(token.getValue());
+    return iterator->second;
+
+std::optional<OpCode> Functions::getAlternateOpcode(OpCode &opcode)
+{
+    if (auto iterator = functions().alternate_opcodes.find(opcode.getValue());
+            iterator != functions().alternate_opcodes.end()) {
+        return iterator->second;
+    }
+    return {};
 }
 
-std::string_view Functions::getFunctionName(WordType opcode)
+std::string_view Functions::getName(WordType opcode)
 {
-    return functions().function_names[opcode];
+    return functions().names[opcode];
+}
+
+int Functions::getNumArguments(WordType opcode)
+{
+    return functions().num_arguments[opcode];
 }

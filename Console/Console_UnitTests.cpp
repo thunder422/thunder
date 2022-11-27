@@ -200,3 +200,54 @@ TEST_CASE("console", "[console]")
         REQUIRE(oss.str() == expected_output);
     }
 }
+
+TEST_CASE("random number generator", "[random]")
+{
+    std::istringstream iss;
+    std::ostringstream oss;
+    Console console {iss, oss};
+
+    SECTION("random sequence should repeat each time program is run")
+    {
+        auto input {
+            "i\n"
+            "print rnd(1)\n"
+            "print rnd(1)\n"
+            "print rnd(1)\n"
+            "print rnd(0)\n"
+            "\n"
+            "r\n"
+            "r\n"
+            "q\n"
+        };
+        iss.str(input);
+
+        console.commandLoop();
+
+        auto expected_output {
+            "Ready\n"
+            ":1 "
+            "2 "
+            "3 "
+            "4 "
+            "5 "
+            ":"
+            "0.786820954867802\n"
+            "0.2504803406880287\n"
+            "0.7106712289786555\n"
+            "0.7106712289786555\n"
+            "End Program.\n"
+            "Ready\n"
+            ":"
+            "0.786820954867802\n"
+            "0.2504803406880287\n"
+            "0.7106712289786555\n"
+            "0.7106712289786555\n"
+            "End Program.\n"
+            "Ready\n"
+            ":"
+            "Good-bye.\n"
+        };
+        REQUIRE(oss.str() == expected_output);
+    }
+}
