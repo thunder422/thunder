@@ -76,6 +76,7 @@ std::optional<OpCode> Functions::getOpcode(const Token &token)
 {
     auto iterator = functions().opcodes.find(token.getValue());
     return iterator->second;
+}
 
 std::optional<OpCode> Functions::getAlternateOpcode(OpCode &opcode)
 {
