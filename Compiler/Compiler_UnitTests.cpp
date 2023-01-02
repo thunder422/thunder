@@ -70,7 +70,7 @@ TEST_CASE("compile an invalid command", "[invalid]")
             try {
                 compiler.compileLine();
             }
-            catch (const ParseError &error) {
+            catch (const Error &error) {
                 REQUIRE(error.column == 0);
             }
         }

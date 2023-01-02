@@ -10,8 +10,8 @@
 #include <stdexcept>
 
 
-struct ParseError : public std::runtime_error {
-    ParseError(const char *message, long column) : runtime_error {message}, column {column} { }
+struct Error : public std::runtime_error {
+    Error(std::string message, std::size_t column) : runtime_error {message}, column {column} { }
 
-    long column;
+    std::size_t column;
 };

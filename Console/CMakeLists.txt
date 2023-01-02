@@ -5,16 +5,18 @@
 # (See accompanying file LICENSE or <http://www.gnu.org/licenses/>)
 
 set(CONSOLE_HEADERS
+  CommandParser.h
   Console.h
 )
 set(CONSOLE_SOURCES
+  CommandParser.cpp
   Console.cpp
 )
 add_library(Console OBJECT ${CONSOLE_HEADERS} ${CONSOLE_SOURCES})
 
 add_executable(Console_UnitTests
-  Console.h
-  Console.cpp
+  ${CONSOLE_HEADERS}
+  ${CONSOLE_SOURCES}
   Console_UnitTests.cpp
 )
 target_link_libraries(Console_UnitTests

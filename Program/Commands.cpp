@@ -6,6 +6,7 @@
  */
 
 #include <Compiler/Compiler.h>
+#include <Program/Find.h>
 #include "Commands.h"
 #include "OpCode.h"
 
@@ -43,10 +44,7 @@ Commands &commands()
 
 std::optional<OpCode> Commands::getOpCode(std::string_view keyword)
 {
-    if (auto it = commands().codes.find(keyword); it != commands().codes.end()) {
-        return it->second;
-    }
-    return {};
+    return find(commands().codes, keyword);
 }
 
 CompilerFunction Commands::getCompileFunction(OpCode opcode)

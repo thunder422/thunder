@@ -100,7 +100,7 @@ TEST_CASE("compile, recreate and run unary negate operator", "[negate]")
             try {
                 expression.compile(input);
             }
-            catch (const ParseError &error) {
+            catch (const Error &error) {
                 REQUIRE(error.column == 2);
             }
         }
@@ -286,7 +286,7 @@ TEST_CASE("compile, recreate and run expressions with parentheses", "[parens]")
             try {
                 expression.compile(missing_paren);
             }
-            catch (const ParseError &error) {
+            catch (const Error &error) {
                 REQUIRE(error.column == 12);
             }
         }

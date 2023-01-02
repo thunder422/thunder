@@ -36,7 +36,7 @@ void Compiler::compileLine()
     if (auto command_opcode = Commands::getOpCode(keyword)) {
         Commands::getCompileFunction(*command_opcode)(*this);
     } else {
-        throw ParseError {"expected valid command or variable for assignment", column};
+        throw Error {"expected valid command or variable for assignment", column};
     }
 }
 
@@ -50,8 +50,7 @@ bool Compiler::compileExpression()
         }
         flushOperatorStack(Precedence::Lowest);
         if (operator_stack.top().precedence == Precedence::OpenParen) {
-            throw ParseError {"expected binary operator or closing parenthesis",
-                parser.getColumn()};
+            throw Error {"expected binary operator or closing parenthesis", parser.getColumn()};
         }
         return true;
     }
@@ -70,7 +69,7 @@ bool Compiler::compileUnaryExpression()
         } else if (operand == Operand::SubExpression) {
             continue;
         } else if (operator_stack.top().precedence != Precedence::Bottom) {
-            throw ParseError {"expected unary operator or operand", parser.getColumn()};
+            throw Error {"expected unary operator or operand", parser.getColumn()};
         } else {
             return false;
         }

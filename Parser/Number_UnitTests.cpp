@@ -149,7 +149,7 @@ TEST_CASE("handle leading zero of a constant correctly including errors", "[zero
             try {
                 Parser{iss}.parseNumber();
             }
-            catch (const ParseError &error) {
+            catch (const Error &error) {
                 REQUIRE(error.column == 1);
             }
         }
@@ -163,7 +163,7 @@ TEST_CASE("handle leading zero of a constant correctly including errors", "[zero
         try {
             Parser{iss}.parseNumber();
         }
-        catch (const ParseError &error) {
+        catch (const Error &error) {
             REQUIRE(error.what() == "expected decimal point after leading zero"sv);
             REQUIRE(error.column == 7);
         }
@@ -196,7 +196,7 @@ TEST_CASE("handle leading period of a constant correctly including errors", "[pe
             try {
                 Parser{iss}.parseNumber();
             }
-            catch (const ParseError &error) {
+            catch (const Error &error) {
                 REQUIRE(error.column == 1);
             }
         }
@@ -219,7 +219,7 @@ TEST_CASE("check for correct exponent format", "[exponent]")
             try {
                 Parser{iss}.parseNumber();
             }
-            catch (const ParseError &error) {
+            catch (const Error &error) {
                 REQUIRE(error.column == 2);
             }
         }
@@ -234,7 +234,7 @@ TEST_CASE("check for correct exponent format", "[exponent]")
     {
         std::istringstream iss {"1e+"};
 
-        REQUIRE_THROWS_AS(Parser{iss}.parseNumber(), ParseError);
+        REQUIRE_THROWS_AS(Parser{iss}.parseNumber(), Error);
     }
     SECTION("check error message and column if no digit after exponent sign")
     {
@@ -242,7 +242,7 @@ TEST_CASE("check for correct exponent format", "[exponent]")
         try {
             Parser{iss}.parseNumber();
         }
-        catch (const ParseError &error) {
+        catch (const Error &error) {
             REQUIRE(error.what() == "expected digit after exponent sign"sv);
             REQUIRE(error.column == 3);
         }
@@ -253,7 +253,7 @@ TEST_CASE("check for correct exponent format", "[exponent]")
         try {
             Parser{iss}.parseNumber();
         }
-        catch (const ParseError &error) {
+        catch (const Error &error) {
             REQUIRE(error.column == 3);
         }
 
@@ -357,7 +357,7 @@ TEST_CASE("check other numeric constants from the IBCP tests", "[other]")
                 try {
                     Parser{iss}.parseNumber();
                 }
-                catch (const ParseError &error) {
+                catch (const Error &error) {
                     REQUIRE(error.column == test.expected_column);
                 }
             }

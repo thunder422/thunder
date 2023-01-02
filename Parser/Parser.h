@@ -23,14 +23,15 @@ public:
     std::string parseIdentifier();
     std::optional<double> parseNumber();
 
-    std::streampos getColumn();
+    std::size_t getColumn();
     char peekNextChar();
     char getNextChar();
     void ungetChar();
 
 private:
     std::istream &is;
-    std::streampos column {0};
+    std::size_t column {0};
+    bool is_at_end {false};
 };
 
 
@@ -39,15 +40,21 @@ inline Parser::Parser(std::istream &is) :
 {
 }
 
-inline std::streampos Parser::getColumn()
+inline std::size_t Parser::getColumn()
 {
     return column;
 }
 
 inline char Parser::peekNextChar()
 {
-    column = is.tellg();
-    return is.peek();
+    char next_char = is.peek();
+    if (std::char_traits<char>::not_eof(next_char)) {
+        column = is.tellg();
+    } else if (!is_at_end) {
+        ++column;
+        is_at_end = true;
+    }
+    return next_char;
 }
 
 inline char Parser::getNextChar()

@@ -87,7 +87,7 @@ void NumberParser::parseZero(int next_char)
     if (next_char == '.') {
         parse = &NumberParser::parseMantissa;
     } else if (isdigit(next_char)) {
-        throw ParseError {"expected decimal point after leading zero", parser.getColumn()};
+        throw Error {"expected decimal point after leading zero", parser.getColumn()};
     } else {
         is_done = true;
     }
@@ -98,7 +98,7 @@ void NumberParser::parsePeriod(int next_char)
     if (isdigit(next_char)) {
         parse = &NumberParser::parseMantissa;
     } else {
-        throw ParseError {"expected digit after decimal point", parser.getColumn()};
+        throw Error {"expected digit after decimal point", parser.getColumn()};
     }
 }
 
@@ -122,7 +122,7 @@ void NumberParser::parseExponent(int next_char)
     } else if (isdigit(next_char)) {
         parse = &NumberParser::parseExponentDigits;
     } else {
-        throw ParseError {"expected sign or digit for exponent", parser.getColumn()};
+        throw Error {"expected sign or digit for exponent", parser.getColumn()};
     }
     is_floating_point = true;
     addNextChar();
@@ -133,7 +133,7 @@ void NumberParser::parseExponentSign(int next_char)
     if (isdigit(next_char)) {
         parse = &NumberParser::parseExponentDigits;
     } else {
-        throw ParseError {"expected digit after exponent sign", parser.getColumn()};
+        throw Error {"expected digit after exponent sign", parser.getColumn()};
     }
 }
 

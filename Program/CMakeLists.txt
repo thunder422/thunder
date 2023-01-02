@@ -7,6 +7,7 @@
 set(PROGRAM_HEADERS
   Code.h
   Commands.h
+  Find.h
   Functions.h
   Lines.h
   OpCode.h
